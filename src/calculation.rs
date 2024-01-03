@@ -10,7 +10,7 @@ pub fn calculate(
     move_type: Types,
     atk_type_boost: bool,
     teras_boost: bool,
-    def_types: DefTypes,
+    def_types: &DefTypes,
     power_appliers: &[PNum],
     atk_appliers: &[PNum],
     def_appliers: &[PNum],

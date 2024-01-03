@@ -16,7 +16,7 @@ pub fn calculation_main(
     move_type: Types,
     atk_type_boost: bool,
     teras_boost: bool,
-    def_types: DefTypes,
+    def_types: &DefTypes,
     power_appliers: &[PNum],
     atk_appliers: &[PNum],
     def_appliers: &[PNum],
@@ -43,7 +43,7 @@ pub fn calculation_main(
 fn rest(
     mut d: u32,
     atk_type_boost: bool,
-    def_types: DefTypes,
+    def_types: &DefTypes,
     move_type: Types,
     damage_applier: PNum,
 ) -> u32 {
