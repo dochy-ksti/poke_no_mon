@@ -18,6 +18,7 @@ impl PNum {
     pub const V1_3: PNum = PNum::new(5325);
     pub const V1_5: PNum = PNum::new(6144);
     pub const V2: PNum = PNum::new(8192);
+
     /// 四捨五入
     pub fn apply4(&self, r: PNum) -> PNum {
         PNum::new((self.val * r.val + 2048) >> 12)
@@ -25,6 +26,11 @@ impl PNum {
     /// 五捨五超入
     pub fn apply5(&self, r: u32) -> u32 {
         (self.val * r + 2047) >> 12
+    }
+
+    /// 切り捨て
+    pub fn apply(&self, r: u32) -> u32 {
+        (self.val * r) >> 12
     }
 
     /// 切り捨て

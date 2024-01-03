@@ -1,18 +1,8 @@
 use std::collections::BTreeSet;
 
-use crate::{power_appliers::PowerAppliers, def_appliers::DefAppliers, atk_appliers::AtkAppliers, damage_appliers::DamageAppliers, pnum::PNum};
+use crate::{power_appliers::PowerAppliers, def_appliers::DefAppliers, atk_appliers::AtkAppliers, damage_appliers::DamageAppliers, pnum::PNum, applier::{Applier, ApplierType}};
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-#[repr(u8)]
-pub enum ApplierType{
-	Power, Atk, Def, Damage
-}
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub struct Applier{
-	pub t : ApplierType,
-	pub num : u16,
-}
 
 pub struct Appliers{
 	appliers : Vec<Applier>
