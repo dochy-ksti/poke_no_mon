@@ -1,4 +1,4 @@
-use crate::{def_types::DefTypes, pnum::PNum, types::Types};
+use crate::pnum::PNum;
 
 pub struct CalcMainResult {
     pub min: u32,
@@ -13,10 +13,9 @@ pub fn calculation_main(
     def: u32,
     atk_rank: i32,
     def_rank: i32,
-    move_type: Types,
     atk_type_boost: bool,
     teras_boost: bool,
-    def_types: &DefTypes,
+    type_effectiveness: PNum,
     power_appliers: &[PNum],
     atk_appliers: &[PNum],
     def_appliers: &[PNum],
@@ -30,30 +29,23 @@ pub fn calculation_main(
     let mut d = d / 50 + 2;
     let min = d * 85 / 100;
     let max = d;
-    let avg = ((d * 92 / 100) + (d * 93 / 100)) / 2; // あやしいなあ・・・
+    let avg = (d * 925) / 1000; //乱数の平均値0.925
 
-	let damage_applier = calc_applier(damage_appliers);
+    let damage_applier = calc_applier(damage_appliers);
     CalcMainResult {
-        min: rest(min, atk_type_boost, def_types, move_type, damage_applier),
-        avg: rest(avg, atk_type_boost, def_types, move_type, damage_applier),
-        max: rest(max, atk_type_boost, def_types, move_type, damage_applier),
+        min: rest(min, atk_type_boost, type_effectiveness, damage_applier),
+        avg: rest(avg, atk_type_boost, type_effectiveness, damage_applier),
+        max: rest(max, atk_type_boost, type_effectiveness, damage_applier),
     }
 }
 
-fn rest(
-    mut d: u32,
-    atk_type_boost: bool,
-    def_types: &DefTypes,
-    move_type: Types,
-    damage_applier: PNum,
-) -> u32 {
+fn rest(mut d: u32, atk_type_boost: bool, type_effectiveness: PNum, damage_applier: PNum) -> u32 {
     if atk_type_boost {
         d = PNum::V1_5.apply5(d);
     }
-    let effectiveness = def_types.effectiveness(move_type);
-    let d = effectiveness.apply(d);
+    let d = type_effectiveness.apply(d);
     let d = damage_applier.apply5(d);
-    if effectiveness.val != 0 {
+    if type_effectiveness.val != 0 {
         if d == 0 {
             1
         } else {
