@@ -6,7 +6,7 @@ pub struct CalcMainResult {
     pub avg: u32,
 }
 
-pub fn calculation_main(
+pub fn calculate_damage_main(
     level: u32,
     move_power: u32,
     atk: u32,

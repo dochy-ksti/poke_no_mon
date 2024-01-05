@@ -3,8 +3,7 @@ use strum_macros::EnumString;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, EnumString)]
 pub enum UnordinaryMoves{
-	ドレインパンチ,
-	カタストロフィ,
+
 }
 
 impl UnordinaryMoves{

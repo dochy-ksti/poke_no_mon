@@ -1,5 +1,5 @@
-pub mod calculation_main;
-pub mod calculation;
+pub mod calculate_damage;
+pub mod playout;
 pub mod abilities;
 pub mod types;
 pub mod items;
@@ -11,7 +11,7 @@ pub mod def_types;
 pub mod pnum;
 pub mod applier;
 pub mod appliers;
-pub mod move_kind;
+pub mod poke_move;
 pub mod unordinary_moves;
 pub mod simulator;
 pub mod pokemon;

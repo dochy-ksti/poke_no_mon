@@ -1,6 +1,6 @@
 use crate::{
     applier::Applier, atk_appliers::AtkAppliers, damage_appliers::DamageAppliers,
-    def_appliers::DefAppliers, move_kind::MoveKind, power_appliers::PowerAppliers,
+    def_appliers::DefAppliers, poke_move::MoveKind, power_appliers::PowerAppliers,
 };
 
 pub enum Abilities {
