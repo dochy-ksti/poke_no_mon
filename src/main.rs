@@ -16,6 +16,7 @@ pub mod unordinary_moves;
 pub mod simulator;
 pub mod pokemon;
 pub mod poke_param;
+pub mod find_effective_move;
 
 // 参考資料
 // https://latest.pokewiki.net/%E3%83%80%E3%83%A1%E3%83%BC%E3%82%B8%E8%A8%88%E7%AE%97%E5%BC%8F

@@ -5,8 +5,12 @@ use crate::{
 pub struct PokeParam {
     /// name は immutable (だと思う)
     pub name: String,
-    /// stats は immutable
+	/// level は immutable (だと思う)
+	pub level: u32,
+    /// stats は immutable (だと思う)
     pub stats: Stats,
+	/// weight は immutable (だと思う)
+	pub weight : u32,
     /// type は mutable
     pub def_types: DefTypes,
 
@@ -24,5 +28,7 @@ pub struct PokeParam {
     pub satk_rank: i32,
     pub sdef_rank: i32,
     pub speed_rank: i32,
-    //命中率や択を扱う方法は分かってない。いやわかってはいるんだが、複雑すぎて実装できる気がしない・・・
+	pub accuracy_rank: i32,
+	pub evasion_rank:i32,
+  
 }

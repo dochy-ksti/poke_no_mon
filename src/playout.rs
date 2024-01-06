@@ -4,17 +4,16 @@ use crate::{
     def_types::DefTypes,
     pnum::PNum,
     pokemon::{Pokemon, Stats},
-    types::Types, items::Items,
+    types::Types, items::Items, poke_param::PokeParam,
 };
 
 pub fn playout(
-    attacker: Pokemon,
-    attacker_stats: Stats,
-    attacker_ability: Abilities,
-	attacker_item : Items,
-    defender: Pokemon,
-    defender_stats: Stats,
-	defender_ability:Abilities,
-	defender_item : Items,
+    p1 : PokeParam,
+    p2: PokeParam,
 ) {
+
+}
+
+pub fn turn(p1 : &mut PokeParam, p1_move_index : usize, p2 : &mut PokeParam, p2_move_index : usize){
+	
 }
