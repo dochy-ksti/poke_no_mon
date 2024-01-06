@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::types::Types;
+use crate::{types::Types, pnum::PNum};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MoveKind {
@@ -11,7 +11,17 @@ pub enum MoveKind {
 
 #[derive(Debug)]
 pub enum PokeMove {
-    Damage(DamageMove),
+	B 炎 100 ツタコンボウ 
+	B 草 75 ウッドホーン
+	SB 無 40 でんこうせっか 
+	B 格 120 ばかぢから
+	B 悪 80 じごくづき
+	B 草 120 パワーウィップ
+	B 岩 60 がんせきふうじ
+	B 超 80 しねんのずつき
+	B 虫 70 とんぼがえり
+	B 地 75 じだんだ
+	B 妖 90 じゃれつく
     /// アイテムがないと威力が倍に
     アクロバット,
 	/// 半分を回復する
@@ -33,6 +43,8 @@ pub struct DamageMove {
     pub power: u32,
     /// そのうち使いたい
     pub contact: bool,
+	pub priority : i32,
+	pub drain : PNum,
 }
 
 impl DamageMove {

@@ -1,3 +1,5 @@
+use crate::pnum::PNum;
+
 pub enum Items{
 	/// 威力補正1.1
 	パンチグローブ等,
@@ -22,5 +24,16 @@ pub enum Items{
 	/// 防御補正1.3 5325
 	クオークチャージ防,
 
+	こだわりスカーフ
+}
 
+impl Items{
+	pub fn speed_modifier(&self) -> Option<PNum>{
+		use Items as I;
+		use PNum as P;
+		match self{
+			I::こだわりスカーフ => Some(P::V1_5),
+			_ => None,
+		}
+	}
 }
