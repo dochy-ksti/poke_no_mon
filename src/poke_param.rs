@@ -1,5 +1,5 @@
 use crate::{
-    abilities::Abilities, def_types::DefTypes, items::Items, poke_move::PokeMove, pokemon::Stats,
+    abilities::Abilities, def_types::DefTypes, items::Items, unique_move::PokeMove, pokemon::Stats,
     types::Types,
 };
 
