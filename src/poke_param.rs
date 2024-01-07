@@ -1,6 +1,6 @@
 use crate::{
-    abilities::Abilities, def_types::DefTypes, items::Items, unique_move::PokeMove, pokemon::Stats,
-    types::Types,
+    abilities::Abilities, def_types::DefTypes, items::Items, pokemon::Stats, types::Types,
+    unique_move::PokeMove,
 };
 
 pub struct PokeParam {
@@ -8,9 +8,9 @@ pub struct PokeParam {
     pub name: String,
     /// level は immutable (だと思う)
     pub level: u32,
-    /// stats は immutable (だと思う)
+    /// stats は mutable(メテノとか)
     pub stats: Stats,
-    /// weight は immutable (だと思う)
+    /// weight は ボディパージで変化するようだ。かるいしをはたき落とされたりもありうるか。
     pub weight: u32,
     /// type は mutable。みずびたしとか
     pub def_types: DefTypes,
@@ -34,4 +34,8 @@ pub struct PokeParam {
     pub speed_rank: i32,
     pub accuracy_rank: i32,
     pub evasion_rank: i32,
+    pub critical_rank: i32,
+
+    /// 小さくなっているかどうか
+    pub is_small: bool,
 }

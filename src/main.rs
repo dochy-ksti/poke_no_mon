@@ -13,7 +13,6 @@ pub mod pnum;
 pub mod applier;
 pub mod appliers;
 pub mod unique_move;
-pub mod unordinary_moves;
 pub mod simulator;
 pub mod pokemon;
 pub mod poke_param;

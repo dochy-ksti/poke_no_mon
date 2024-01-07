@@ -1,8 +1,10 @@
+use strum_macros::EnumString;
+
 use crate::pnum::PNum;
 
 
 #[repr(usize)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, EnumString)]
 pub enum Types{
 	無,
 	炎,
