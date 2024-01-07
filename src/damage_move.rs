@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{collections::HashMap, str::FromStr, sync::OnceLock};
 
 use serde::Deserialize;
 
@@ -69,7 +69,7 @@ fn create_damage(
         t,
         power,
         o.priority.unwrap_or(0),
-        None,
+        o.drain.map(|v| PNum::from_percent(v)),
     )
 }
 
@@ -82,17 +82,28 @@ pub enum DamageMoveSyntax {
 #[derive(Debug, Deserialize)]
 pub struct Options {
     pub priority: Option<i32>,
+    pub drain: Option<u32>,
 }
 
 impl DamageMoveSyntax {
     pub fn to_damage(self) -> DamageMove {
         match self {
-            DamageMoveSyntax::T(t, p, n, u, o) =>{
-				 create_damage(n, MoveKind::Special, t, p, u, o)
-			}
-            DamageMoveSyntax::B(t, p, n, u, o) =>{
-				 create_damage(n, MoveKind::Physical, t, p, u, o)
-			}
+            DamageMoveSyntax::T(t, p, n, u, o) => create_damage(n, MoveKind::Special, t, p, u, o),
+            DamageMoveSyntax::B(t, p, n, u, o) => create_damage(n, MoveKind::Physical, t, p, u, o),
         }
     }
+}
+
+static DAMAGE_MOVE_STORAGE: OnceLock<HashMap<String, DamageMove>> = OnceLock::new();
+
+pub fn damage_move_storage() -> &'static HashMap<String, DamageMove> {
+    &DAMAGE_MOVE_STORAGE.get_or_init(|| {
+        let vec: Vec<DamageMoveSyntax> = munyo::from_file("moves/damage_moves.txt").unwrap();
+        let mut map: HashMap<String, DamageMove> = HashMap::with_capacity(vec.len());
+        for item in vec {
+            let damage = item.to_damage();
+            map.insert(damage.name.to_string(), damage);
+        }
+        map
+    })
 }

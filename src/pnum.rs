@@ -8,6 +8,9 @@ impl PNum {
     const fn new(val: u32) -> PNum {
         PNum { val }
     }
+	pub fn from_percent(percent : u32) -> PNum{
+		Self::new(4096 * percent /100)
+	}
     pub const V0: PNum = PNum::new(0);
     pub const V0_25: PNum = PNum::new(1024);
     pub const V0_5: PNum = PNum::new(2048);

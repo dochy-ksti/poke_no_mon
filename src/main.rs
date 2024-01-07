@@ -1,3 +1,5 @@
+use crate::damage_move::damage_move_storage;
+
 pub mod calculate_damage_main;
 pub mod calculate_damage;
 pub mod playout;
@@ -23,5 +25,6 @@ pub mod damage_move;
 // https://latest.pokewiki.net/%E3%83%80%E3%83%A1%E3%83%BC%E3%82%B8%E8%A8%88%E7%AE%97%E5%BC%8F
 
 fn main() {
-    println!("Hello, world!");
+	let s = damage_move_storage();
+    println!("{:?}", s);
 }

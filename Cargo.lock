@@ -220,9 +220,7 @@ dependencies = [
 
 [[package]]
 name = "munyo"
-version = "0.3.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca15a944be60f1e1712e44c36251c55f8c0440c25f8ac1d860ed021a5fde81f4"
+version = "0.3.10"
 dependencies = [
  "anyhow",
  "async-channel",
