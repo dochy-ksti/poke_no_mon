@@ -26,5 +26,5 @@ pub mod damage_move;
 
 fn main() {
 	let s = damage_move_storage();
-    println!("{:?}", s);
+    println!("{:#?}", s);
 }
