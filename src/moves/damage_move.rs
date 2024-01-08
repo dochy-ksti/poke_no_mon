@@ -2,7 +2,7 @@ use std::{collections::HashMap, str::FromStr, sync::OnceLock};
 
 use serde::Deserialize;
 
-use crate::{pnum::PNum, types::Types};
+use crate::{pnum::PNum, poke_params::types::Types, };
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MoveKind {

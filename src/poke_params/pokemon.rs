@@ -1,4 +1,5 @@
-use crate::def_types::DefTypes;
+use super::def_types::DefTypes;
+
 
 pub struct Pokemon{
 	pub name : String,

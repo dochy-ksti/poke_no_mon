@@ -1,4 +1,7 @@
-use crate::{types::Types, pnum::PNum};
+use crate::pnum::PNum;
+
+use super::types::Types;
+
 
 /// ポケモンはひとつまたはふたつのタイプを持つ
 pub struct DefTypes{

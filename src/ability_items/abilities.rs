@@ -1,7 +1,5 @@
-use crate::{
-    applier::Applier, atk_appliers::AtkAppliers, damage_appliers::DamageAppliers,
-    def_appliers::DefAppliers,  power_appliers::PowerAppliers, damage_move::MoveKind,
-};
+use crate::{moves::damage_move::MoveKind, appliers::{applier::Applier, damage_appliers::DamageAppliers, atk_appliers::AtkAppliers, def_appliers::DefAppliers, power_appliers::PowerAppliers}};
+
 
 pub enum Abilities {
     // 1.3

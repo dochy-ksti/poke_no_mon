@@ -26,7 +26,7 @@ pub fn calculate_damage_main(
     let def = calc_def(def, def_rank, def_appliers);
     let d = (level * 2) / 5 + 2;
     let d = (d * power * atk) / def;
-    let mut d = d / 50 + 2;
+    let d = d / 50 + 2;
     let min = d * 85 / 100;
     let max = d;
     let avg = (d * 925) / 1000; //乱数の平均値0.925

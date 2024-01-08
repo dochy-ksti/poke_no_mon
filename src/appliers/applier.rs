@@ -1,9 +1,10 @@
-use crate::{atk_appliers::AtkAppliers, def_appliers::DefAppliers, power_appliers::PowerAppliers, damage_appliers::DamageAppliers};
+use super::{power_appliers::PowerAppliers, atk_appliers::AtkAppliers, def_appliers::DefAppliers, damage_appliers::DamageAppliers, speed_appliers::SpeedAppliers};
+
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 #[repr(u8)]
 pub enum ApplierType{
-	Power, Atk, Def, Damage
+	Power, Atk, Def, Damage, Speed
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -24,5 +25,8 @@ impl Applier{
 	}
 	pub fn damage(app : DamageAppliers) -> Applier{
 		Applier{ t : ApplierType::Damage, num : app as u16 }
+	}
+	pub fn speed(app : SpeedAppliers) -> Applier{
+		Applier{ t : ApplierType::Speed, num : app as u16 }
 	}
 }

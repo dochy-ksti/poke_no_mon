@@ -1,8 +1,7 @@
 use crate::{poke_param::PokeParam, unique_move::PokeMove};
 
-pub fn calculate_damage(attacker: &PokeParam, poke_move : &PokeMove, defender: &PokeParam){
+pub fn calculate_turn(p1: &PokeParam, p1_move : &PokeMove, p2: &PokeParam, p2_move: &PokeMove){
 
-	let level = attacker.level;
 	
 	// calculate_damage_main(
     //     level,

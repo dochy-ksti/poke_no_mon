@@ -1,7 +1,7 @@
-use crate::{
-    abilities::Abilities, def_types::DefTypes, items::Items, pokemon::Stats, types::Types,
-    unique_move::PokeMove,
-};
+use crate::{ability_items::{abilities::Abilities, items::Items}, moves::unique_move::PokeMove};
+
+use super::{pokemon::Stats, def_types::DefTypes, types::Types};
+
 
 pub struct PokeParam {
     /// name は immutable (だと思う)
