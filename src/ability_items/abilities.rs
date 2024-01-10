@@ -1,5 +1,10 @@
-use crate::{moves::damage_move::MoveKind, appliers::{applier::Applier, damage_appliers::DamageAppliers, atk_appliers::AtkAppliers, def_appliers::DefAppliers, power_appliers::PowerAppliers}};
-
+use crate::{
+    appliers::{
+        applier::Applier, atk_appliers::AtkAppliers, damage_appliers::DamageAppliers,
+        def_appliers::DefAppliers, power_appliers::PowerAppliers,
+    },
+    moves::damage_move::MoveKind,
+};
 
 pub enum Abilities {
     // 1.3
@@ -16,6 +21,9 @@ pub enum Abilities {
 
     // 防御補正 体力最大値のとき0.5
     マルチスケイル,
+
+    こだいかっせい,
+    クオークチャージ,
 }
 
 impl Abilities {

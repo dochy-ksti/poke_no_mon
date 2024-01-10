@@ -21,7 +21,6 @@ pub struct Applier {
 
 impl Applier {
     pub fn power(app: PowerAppliers) -> Applier {
-        todo!("applier にも temporary（ターン数で終わる) permanent(永続) interim(交代まで続く)の３つがあるはず。");
         Applier {
             t: ApplierType::Power,
             num: app as u16,

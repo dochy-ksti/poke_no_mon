@@ -1,4 +1,5 @@
-use crate::{poke_param::PokeParam, unique_move::PokeMove};
+use crate::{poke_params::poke_param::PokeParam, moves::unique_move::PokeMove};
+
 
 pub fn calculate_turn(p1: &PokeParam, p1_move : &PokeMove, p2: &PokeParam, p2_move: &PokeMove){
 
