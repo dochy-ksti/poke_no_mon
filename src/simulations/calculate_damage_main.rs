@@ -1,5 +1,7 @@
 use crate::pnum::PNum;
 
+use super::calc_rank::calc_rank;
+
 pub struct CalcMainResult {
     pub min: u32,
     pub max: u32,
@@ -96,10 +98,4 @@ fn calc_applier(appliers: &[PNum]) -> PNum {
     v
 }
 
-fn calc_rank(value: u32, rank: i32) -> u32 {
-    if 0 <= rank {
-        (value * (2 + rank as u32)) / 2
-    } else {
-        (value * 2) / (2 + (-rank) as u32)
-    }
-}
+

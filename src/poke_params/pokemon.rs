@@ -80,7 +80,7 @@ impl Stats{
 	pub fn def(&self) -> u16{ self.values[2] }
 	pub fn satk(&self) -> u16{ self.values[3] }
 	pub fn sdef(&self) -> u16{ self.values[4] }
-	pub fn speed(&self) -> u16{ self.values[5] }
+	pub fn speed(&self) -> u32{ self.values[5] as u32 }
 }
 
 /// 個体値
