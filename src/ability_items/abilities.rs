@@ -6,6 +6,7 @@ use crate::{
     moves::damage_move::MoveKind,
 };
 
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Abilities {
     // 1.3
     //ちからずく等,
@@ -21,6 +22,8 @@ pub enum Abilities {
 
     // 防御補正 体力最大値のとき0.5
     マルチスケイル,
+
+	ノーてんき,
 
     こだいかっせい,
     クオークチャージ,

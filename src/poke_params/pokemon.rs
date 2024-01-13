@@ -21,7 +21,7 @@ impl Pokemon{
 		let mut stats : Stats = Default::default();
 
 		let hp = (self.base.hp() * 2 + self.iv.hp() + self.ef.hp()/4) * self.level / 100 + 10 + self.level;
-		stats.values[0] = hp;
+		stats.values[0] = hp as u32;
 
 		for n in 1..6{
 			let base = self.base.values[n];
@@ -29,7 +29,7 @@ impl Pokemon{
 			let ef = self.ef.values[n];
 			let nature = self.natures.values[n];
 			let v = (((base * 2 + iv + ef/4) * self.level) / 100 + 5) * nature / 10;
-			stats.values[n] = v;
+			stats.values[n] = v as u32;
 		}
 		stats
 	}
@@ -71,16 +71,16 @@ impl Natures{
 /// ステータス
 #[derive(Debug, Default)]
 pub struct Stats{
-	pub values : [u16; 6]
+	pub values : [u32; 6]
 }
 
 impl Stats{
-	pub fn hp(&self) -> u16{ self.values[0] }
-	pub fn atk(&self) -> u16{ self.values[1] }
-	pub fn def(&self) -> u16{ self.values[2] }
-	pub fn satk(&self) -> u16{ self.values[3] }
-	pub fn sdef(&self) -> u16{ self.values[4] }
-	pub fn speed(&self) -> u32{ self.values[5] as u32 }
+	pub fn hp(&self) -> u32{ self.values[0] }
+	pub fn atk(&self) -> u32{ self.values[1] }
+	pub fn def(&self) -> u32{ self.values[2] }
+	pub fn satk(&self) -> u32{ self.values[3] }
+	pub fn sdef(&self) -> u32{ self.values[4] }
+	pub fn speed(&self) -> u32{ self.values[5] }
 }
 
 /// 個体値
