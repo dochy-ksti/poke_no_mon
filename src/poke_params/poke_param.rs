@@ -57,17 +57,32 @@ pub enum ParadoxBoost {
 }
 
 impl PokeParam {
+	pub fn atk(&self) -> u32{
+		calc_rank(self.stats.atk(), self.atk_rank)
+	}
+	pub fn def(&self) -> u32{
+		calc_rank(self.stats.def(), self.def_rank)
+	}
+	pub fn satk(&self) -> u32{
+		calc_rank(self.stats.satk(), self.satk_rank)
+	}
+	pub fn sdef(&self) -> u32{
+		calc_rank(self.stats.sdef(), self.sdef_rank)
+	}
+
     pub fn speed(&self) -> u32 {
         let speed = calc_rank(self.stats.speed(), self.speed_rank);
+		//パラドックス補正は通常の補正処理で1.3倍されるが、speedは通常の補正処理ではない形で1.5倍される
+		//おそらくここでやるのが正しい
         if self.paradox_boost() == ParadoxBoost::Speed {
-            speed * 15 / 10
+            speed * 3 / 2
         } else {
             speed
         }
     }
 
     fn paradox_boost(&self) -> ParadoxBoost {
-        // 両方ともNone以外になるということはないはず。
+        // 両方ともNone以外になるということはない。あってはならない。
         if self.boost_energy == ParadoxBoost::None {
             return self.climate_paradox_boost;
         } else {
