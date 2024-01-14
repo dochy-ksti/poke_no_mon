@@ -15,14 +15,14 @@ pub fn paradox_ability(p: &mut PokeParam, env: &mut Environment) {
             p.boost_energy = activate(p);
         }
     }
-	if p.ability == Abilities::クオークチャージ{
-		//エレキフィールドなら活性化
-	} else{
-		if p.item == Items::ブーストエナジー {
+    if p.ability == Abilities::クオークチャージ {
+        //エレキフィールドなら活性化
+    } else {
+        if p.item == Items::ブーストエナジー {
             p.item = Items::なし;
             p.boost_energy = activate(p);
         }
-	}
+    }
 }
 
 fn activate(p: &mut PokeParam) -> ParadoxBoost {
@@ -33,6 +33,6 @@ fn activate(p: &mut PokeParam) -> ParadoxBoost {
         (ParadoxBoost::Def, p.def()),
         (ParadoxBoost::Atk, p.atk()),
     ];
-	return c.into_iter().max_by_key(|a| a.1).unwrap().0;
-	
+    //同値の場合下が優先
+    return c.into_iter().max_by_key(|a| a.1).unwrap().0;
 }

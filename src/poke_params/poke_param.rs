@@ -26,6 +26,9 @@ pub struct PokeParam {
 
     /// move は基本的にはimmutableなはず。わるあがきはあるが・・・
     pub moves: Vec<PokeMove>,
+	/// 前回使った技
+	pub	previously_selected : Option<usize>,
+	pub こだわり : bool,
 
     /// テラスは当然 mutable
     pub teras: Option<Types>,
@@ -71,15 +74,12 @@ impl PokeParam {
 	}
 
     pub fn speed(&self) -> u32 {
-        let speed = calc_rank(self.stats.speed(), self.speed_rank);
-		//パラドックス補正は通常の補正処理で1.3倍されるが、speedは通常の補正処理ではない形で1.5倍される
-		//おそらくここでやるのが正しい
-        if self.paradox_boost() == ParadoxBoost::Speed {
-            speed * 3 / 2
-        } else {
-            speed
-        }
+        calc_rank(self.stats.speed(), self.speed_rank)
     }
+
+	pub fn speed_raw(&self) -> u32{
+		self.stats.speed()
+	}
 
     fn paradox_boost(&self) -> ParadoxBoost {
         // 両方ともNone以外になるということはない。あってはならない。

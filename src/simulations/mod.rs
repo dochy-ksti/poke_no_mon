@@ -3,3 +3,5 @@ pub mod calculate_turn;
 pub mod paradox_ability;
 pub mod appear;
 pub mod calc_rank;
+pub mod speeder;
+pub mod game_start;
