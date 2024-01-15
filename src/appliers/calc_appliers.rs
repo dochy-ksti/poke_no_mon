@@ -7,7 +7,7 @@ use super::{
     atk_appliers::AtkAppliers,
     damage_appliers::DamageAppliers,
     def_appliers::DefAppliers,
-    power_appliers::PowerAppliers, speed_appliers::SpeedAppliers,
+    power_appliers::PowerAppliers,
 };
 
 pub fn calc_appliers(appliers: &[Applier]) -> AppliersResult {
@@ -15,7 +15,6 @@ pub fn calc_appliers(appliers: &[Applier]) -> AppliersResult {
     let mut atk = BTreeSet::new();
     let mut def = BTreeSet::new();
     let mut damage = BTreeSet::new();
-    let mut speed = BTreeSet::new();
 
     for applier in appliers {
         match applier.t {
@@ -30,9 +29,6 @@ pub fn calc_appliers(appliers: &[Applier]) -> AppliersResult {
             }
             ApplierType::Damage => {
                 damage.insert(applier.num);
-            }
-            ApplierType::Speed => {
-                speed.insert(applier.num);
             }
         }
     }
@@ -54,10 +50,7 @@ pub fn calc_appliers(appliers: &[Applier]) -> AppliersResult {
             .into_iter()
             .map(|n| DamageAppliers::from_u16(n).value())
             .collect(),
-        speed: speed
-            .into_iter()
-            .map(|n| SpeedAppliers::from_u16(n).value())
-            .collect(),
+    
     };
 }
 
@@ -66,5 +59,4 @@ pub struct AppliersResult {
     pub atk: Vec<PNum>,
     pub def: Vec<PNum>,
     pub damage: Vec<PNum>,
-    pub speed: Vec<PNum>,
 }

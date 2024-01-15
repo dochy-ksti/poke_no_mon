@@ -69,7 +69,7 @@ impl Natures{
 }
 
 /// ステータス
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct Stats{
 	pub values : [u32; 6]
 }

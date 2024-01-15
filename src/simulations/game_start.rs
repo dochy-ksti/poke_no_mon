@@ -1,8 +1,16 @@
-use crate::{poke_params::poke_param::PokeParam, environment::environment::Environment};
+use crate::{
+    environment::environment::Environment, moves::unique_move::PokeMove,
+    poke_params::poke_param::PokeParam,
+};
 
-use super::{speeder::Speeder, appear::appear};
+use super::appear::appear2;
 
-pub fn game_start(p1 : PokeParam, p2 : PokeParam, mut env : Environment){
-	let mut sp = Speeder::new(p1, Some(p2));
-	appear(&mut sp, &mut env)
+pub fn game_start(
+    mut p1: PokeParam,
+    p1_moves: &[PokeMove],
+    mut p2: PokeParam,
+    p2_moves: &[PokeMove],
+    mut env: Environment,
+) {
+    appear2(&mut p1, &mut p2, &mut env);
 }

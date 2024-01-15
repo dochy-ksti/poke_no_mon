@@ -3,6 +3,7 @@ use crate::pnum::PNum;
 use super::types::Types;
 
 
+#[derive(Debug, Clone, Copy)]
 /// ポケモンはひとつまたはふたつのタイプを持つ
 pub struct DefTypes{
 	pub type1 : Types,

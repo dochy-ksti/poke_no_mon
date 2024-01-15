@@ -1,6 +1,6 @@
 use super::{
     atk_appliers::AtkAppliers, damage_appliers::DamageAppliers, def_appliers::DefAppliers,
-    power_appliers::PowerAppliers, speed_appliers::SpeedAppliers,
+    power_appliers::PowerAppliers, 
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -10,7 +10,6 @@ pub enum ApplierType {
     Atk,
     Def,
     Damage,
-    Speed,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -44,10 +43,5 @@ impl Applier {
             num: app as u16,
         }
     }
-    pub fn speed(app: SpeedAppliers) -> Applier {
-        Applier {
-            t: ApplierType::Speed,
-            num: app as u16,
-        }
-    }
+  
 }

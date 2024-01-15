@@ -6,6 +6,7 @@ use crate::{
 
 use super::{def_types::DefTypes, pokemon::Stats, types::Types};
 
+#[derive(Debug, Clone)]
 pub struct PokeParam {
     /// name は immutable (だと思う)
     pub name: String,
@@ -24,8 +25,6 @@ pub struct PokeParam {
     /// item はもちろん mutable。はたきおとされたり交換されたり。
     pub item: Items,
 
-    /// move は基本的にはimmutableなはず。わるあがきはあるが・・・
-    pub moves: Vec<PokeMove>,
 	/// 前回使った技
 	pub	previously_selected : Option<usize>,
 	pub こだわり : bool,
@@ -47,6 +46,10 @@ pub struct PokeParam {
 
     pub boost_energy: ParadoxBoost,
     pub climate_paradox_boost: ParadoxBoost,
+
+	//状態異常
+	
+	//アンコールとか、もろもろの変化。じゅうでんとか、いろいろ必要
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -81,7 +84,7 @@ impl PokeParam {
 		self.stats.speed()
 	}
 
-    fn paradox_boost(&self) -> ParadoxBoost {
+    pub fn paradox_boost(&self) -> ParadoxBoost {
         // 両方ともNone以外になるということはない。あってはならない。
         if self.boost_energy == ParadoxBoost::None {
             return self.climate_paradox_boost;
