@@ -9,6 +9,7 @@ use crate::{
 // https://wiki.xn--rckteqa2e.com/wiki/%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%AF%E3%83%81%E3%83%A3%E3%83%BC%E3%82%B8
 pub fn paradox_ability(p: &mut PokeParam, env: &mut Environment) {
     if p.paradox_boost() == ParadoxBoost::None {
+        // 化学変化ガスでないなら、が本来入る
         if p.ability == Abilities::こだいかっせい {
             if false {
                 //天気が晴れなら活性化
