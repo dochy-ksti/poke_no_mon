@@ -26,6 +26,8 @@ pub enum Abilities {
 
     ノーてんき,
 
+	かたやぶり,
+
     こだいかっせい,
     クオークチャージ,
 }
@@ -36,7 +38,7 @@ impl Abilities {
 
         match self {
             A::マルチスケイル => {
-                if p1.hp == p1.stats.hp() {
+                if p1.hp == p1.stats.hp() && p2.ability != Abilities::かたやぶり{
                     damage(DamageAppliers::マルチスケイル)
                 } else {
                     None
