@@ -4,6 +4,7 @@ use crate::{
         def_appliers::DefAppliers, power_appliers::PowerAppliers,
     },
     moves::damage_move::MoveKind,
+    poke_params::poke_param::{ParadoxBoost, PokeParam},
 };
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -23,19 +24,19 @@ pub enum Abilities {
     // 防御補正 体力最大値のとき0.5
     マルチスケイル,
 
-	ノーてんき,
+    ノーてんき,
 
     こだいかっせい,
     クオークチャージ,
 }
 
 impl Abilities {
-    pub fn defender(&self, move_kind: MoveKind, def_max_hp: u32, def_hp: u32) -> Option<Applier> {
+    pub fn defender(&self, p1: &PokeParam, move_kind: MoveKind, p2: &PokeParam) -> Option<Applier> {
         use Abilities as A;
 
         match self {
             A::マルチスケイル => {
-                if def_hp == def_max_hp {
+                if p1.hp == p1.stats.hp() {
                     damage(DamageAppliers::マルチスケイル)
                 } else {
                     None
@@ -55,11 +56,27 @@ impl Abilities {
                     None
                 }
             }
+            A::クオークチャージ | A::こだいかっせい => {
+                match p1.paradox_boost() {
+                    ParadoxBoost::Def => {
+                        if move_kind == MoveKind::Physical {
+                            return def(DefAppliers::クオークチャージ等);
+                        }
+                    }
+                    ParadoxBoost::SDef => {
+                        if move_kind == MoveKind::Special {
+                            return def(DefAppliers::クオークチャージ等);
+                        }
+                    }
+                    _ => {}
+                }
+                return None;
+            }
             _ => None,
         }
     }
 
-    pub fn attacker(&self, move_kind: MoveKind) -> Option<Applier> {
+    pub fn attacker(&self, p1 : &PokeParam, move_kind: MoveKind, p2 : &PokeParam) -> Option<Applier> {
         use Abilities as A;
 
         match self {
@@ -77,6 +94,22 @@ impl Abilities {
                     None
                 }
             }
+			A::クオークチャージ | A::こだいかっせい =>{
+				match p1.paradox_boost(){
+					ParadoxBoost::Atk =>{
+						if move_kind == MoveKind::Physical{
+							return atk(AtkAppliers::クオークチャージ攻);
+						}
+					}
+					ParadoxBoost::SAtk =>{
+						if move_kind == MoveKind::Special{
+							return atk(AtkAppliers::クオークチャージ攻);
+						}
+					}
+					_ =>{}
+				}
+				return None;
+			}
             _ => None,
         }
     }

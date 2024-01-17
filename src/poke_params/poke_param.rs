@@ -14,6 +14,7 @@ pub struct PokeParam {
     pub level: u32,
     /// stats は mutable(メテノとか、なんとかスワップとかで実数値を直接変更することがある)
     pub stats: Stats,
+	pub hp : u32,
     /// weight は ボディパージで変化するようだ。かるいしをはたき落とされたりもありうるか。
     pub weight: u32,
     /// type は mutable。みずびたしとか
@@ -78,6 +79,20 @@ impl PokeParam {
     pub fn speed(&self) -> u32 {
         calc_rank(self.stats.speed(), self.speed_rank)
     }
+
+	pub fn atk_raw(&self) -> u32{
+		self.stats.atk()
+	}
+
+	pub fn def_raw(&self) -> u32{
+		self.stats.def()
+	}
+	pub fn satk_raw(&self) -> u32{
+		self.stats.satk()
+	}
+	pub fn sdef_raw(&self) -> u32{
+		self.stats.sdef()
+	}
 
     pub fn speed_raw(&self) -> u32 {
         self.stats.speed()

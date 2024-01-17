@@ -13,8 +13,6 @@ pub fn calculate_damage_main(
     move_power: u32,
     atk: u32,
     def: u32,
-    atk_rank: i32,
-    def_rank: i32,
     atk_type_boost: bool,
     teras_boost: bool,
     type_effectiveness: PNum,
@@ -24,8 +22,8 @@ pub fn calculate_damage_main(
     damage_appliers: &[PNum],
 ) -> CalcMainResult {
     let power = calc_power(move_power, power_appliers, teras_boost);
-    let atk = calc_atk(atk, atk_rank, atk_appliers);
-    let def = calc_def(def, def_rank, def_appliers);
+    let atk = calc_atk(atk, atk_appliers);
+    let def = calc_def(def,  def_appliers);
     let d = (level * 2) / 5 + 2;
     let d = (d * power * atk) / def;
     let d = d / 50 + 2;
@@ -69,8 +67,7 @@ fn calc_power(move_power: u32, power_appliers: &[PNum], teras_boost: bool) -> u3
     power
 }
 
-fn calc_atk(atk: u32, atk_rank: i32, atk_appliers: &[PNum]) -> u32 {
-    let atk = calc_rank(atk, atk_rank);
+fn calc_atk(atk: u32, atk_appliers: &[PNum]) -> u32 {
     let atk = calc_applier(atk_appliers).apply5(atk);
     if atk == 0 {
         1
@@ -79,8 +76,7 @@ fn calc_atk(atk: u32, atk_rank: i32, atk_appliers: &[PNum]) -> u32 {
     }
 }
 
-fn calc_def(def: u32, def_rank: i32, def_appliers: &[PNum]) -> u32 {
-    let def = calc_rank(def, def_rank);
+fn calc_def(def: u32,  def_appliers: &[PNum]) -> u32 {
     let def = calc_applier(def_appliers).apply5(def);
     //本来天候の計算が入るが今はまだ使ってない
     if def == 0 {

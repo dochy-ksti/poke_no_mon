@@ -19,4 +19,15 @@ impl DefTypes{
 		let second = move_type.effectiveness(t2);
 		first.mul(second)
 	}
+	pub fn contains(&self, move_type : Types) -> bool{
+		if self.type1 == move_type{
+			return true;
+		} 
+		if let Some(type2) = self.type2{
+			if type2 == move_type{
+				return true;
+			}
+		}
+		false
+	}
 }
