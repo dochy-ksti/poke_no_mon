@@ -30,16 +30,15 @@ impl SpeedAppliers{
 	}
 }
 
-/// speedに関しては、必要になるタイミングが違うのでapplierで処理しない。
+/// speedに関しては、必要になるタイミングが違うので別枠で処理する
 pub fn calc_speed(p : &PokeParam, env : &Environment) -> u32{
-	let mut speed = p.speed();
+	let mut applier = PNum::V1;
 	if p.paradox_boost() == ParadoxBoost::Speed{
-		//本当は6144/4092だが、変わらないだろう
-		speed = speed * 3 / 2;
+		applier = applier.apply4(PNum::V1_5);
 	}
 	if p.item == Items::こだわりスカーフ{
-		speed = speed * 3 / 2;
+		applier = applier.apply4(PNum::V1_5);
 	}
 	//トリックルーム処理やおいかぜ処理、まひ処理など
-	speed
+	applier.apply5(p.speed())
 }

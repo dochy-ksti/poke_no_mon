@@ -1,6 +1,6 @@
 use crate::{
     ability_items::{abilities::Abilities, items::Items},
-    moves::unique_move::PokeMove,
+    moves::unique_move::UniqueMove,
     simulations::calc_rank::calc_rank,
 };
 
@@ -25,9 +25,9 @@ pub struct PokeParam {
     /// item はもちろん mutable。はたきおとされたり交換されたり。
     pub item: Items,
 
-	/// 前回使った技
-	pub	previously_selected : Option<usize>,
-	pub こだわり : bool,
+    /// 前回使った技
+    pub previously_selected: Option<usize>,
+    pub こだわり: bool,
 
     /// テラスは当然 mutable
     pub teras: Option<Types>,
@@ -46,10 +46,9 @@ pub struct PokeParam {
 
     pub boost_energy: ParadoxBoost,
     pub climate_paradox_boost: ParadoxBoost,
+    //状態異常
 
-	//状態異常
-	
-	//アンコールとか、もろもろの変化。じゅうでんとか、いろいろ必要
+    //アンコールとか、もろもろの変化。じゅうでんとか、いろいろ必要
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -63,26 +62,26 @@ pub enum ParadoxBoost {
 }
 
 impl PokeParam {
-	pub fn atk(&self) -> u32{
-		calc_rank(self.stats.atk(), self.atk_rank)
-	}
-	pub fn def(&self) -> u32{
-		calc_rank(self.stats.def(), self.def_rank)
-	}
-	pub fn satk(&self) -> u32{
-		calc_rank(self.stats.satk(), self.satk_rank)
-	}
-	pub fn sdef(&self) -> u32{
-		calc_rank(self.stats.sdef(), self.sdef_rank)
-	}
+    pub fn atk(&self) -> u32 {
+        calc_rank(self.stats.atk(), self.atk_rank)
+    }
+    pub fn def(&self) -> u32 {
+        calc_rank(self.stats.def(), self.def_rank)
+    }
+    pub fn satk(&self) -> u32 {
+        calc_rank(self.stats.satk(), self.satk_rank)
+    }
+    pub fn sdef(&self) -> u32 {
+        calc_rank(self.stats.sdef(), self.sdef_rank)
+    }
 
     pub fn speed(&self) -> u32 {
         calc_rank(self.stats.speed(), self.speed_rank)
     }
 
-	pub fn speed_raw(&self) -> u32{
-		self.stats.speed()
-	}
+    pub fn speed_raw(&self) -> u32 {
+        self.stats.speed()
+    }
 
     pub fn paradox_boost(&self) -> ParadoxBoost {
         // 両方ともNone以外になるということはない。あってはならない。
