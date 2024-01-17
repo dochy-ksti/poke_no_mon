@@ -1,9 +1,10 @@
 use crate::{
+    appliers::{applier::Applier, calc_appliers::calc_appliers},
     moves::{
         damage_move::{DamageMove, MoveKind},
         unique_move::UniqueMove,
     },
-    poke_params::{poke_const::PokeConst, poke_param::PokeParam}, appliers::{applier::Applier, calc_appliers::calc_appliers},
+    poke_params::{poke_const::PokeConst, poke_param::PokeParam},
 };
 
 use super::calculate_damage_main::{calculate_damage_main, CalcMainResult};
@@ -21,7 +22,7 @@ pub fn calculate_damage(
     let (atk, def) = match m.kind {
         MoveKind::Physical => (p1.atk(), p2.def()),
         MoveKind::Special => (p1.satk(), p2.sdef()),
-        MoveKind::Status => panic!("Damages can't be calculated for status moves"),
+        MoveKind::Status => panic!("Damage can't be calculated for status moves"),
     };
     let atk_type_boost = p1.def_types.contains(m.move_type);
     let teras_boost = if let Some(t) = p1.teras {
@@ -29,16 +30,16 @@ pub fn calculate_damage(
     } else {
         false
     };
-	let type_effectiveness = p2.def_types.effectiveness(m.move_type);
+    let type_effectiveness = p2.def_types.effectiveness(m.move_type);
 
-	let mut appliers : Vec<Applier> = vec![];
+    let mut appliers: Vec<Applier> = vec![];
 
-	add(&mut appliers, p1.ability.attacker(p1, m.kind, p2));
-	add(&mut appliers, p2.ability.defender(p2, m.kind, p1));
-	add(&mut appliers, p1.item.attacker(p1, m.kind, p2));
-	add(&mut appliers, p2.item.defender(p2, m.kind, p1));
+    add(&mut appliers, p1.ability.attacker(p1, m.kind, p2));
+    add(&mut appliers, p2.ability.defender(p2, m.kind, p1));
+    add(&mut appliers, p1.item.attacker(p1, m.kind, p2));
+    add(&mut appliers, p2.item.defender(p2, m.kind, p1));
 
-	let app = calc_appliers(&appliers);
+    let app = calc_appliers(&appliers);
 
     calculate_damage_main(
         level,
@@ -48,15 +49,15 @@ pub fn calculate_damage(
         atk_type_boost,
         teras_boost,
         type_effectiveness,
-		&app.power,
+        &app.power,
         &app.atk,
         &app.def,
         &app.damage,
     )
 }
 
-fn add(appliers : &mut Vec<Applier>, app : Option<Applier>){
-	if let Some(app) = app{
-		appliers.push(app)
-	}
+fn add(appliers: &mut Vec<Applier>, app: Option<Applier>) {
+    if let Some(app) = app {
+        appliers.push(app)
+    }
 }
