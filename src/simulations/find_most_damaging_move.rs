@@ -1,6 +1,6 @@
 use crate::{
     moves::{
-        damage_move::{DamageMove, UniqueType},
+        damage_move::{DamageMove, DamageType},
         poke_move::PokeMove,
     },
     poke_params::{poke_const::PokeConst, poke_param::PokeParam},
@@ -16,10 +16,10 @@ pub fn find_most_damaging_move(p1: &PokeParam, p1_c: &PokeConst, p2: &PokeParam)
     let mut index: isize = -1;
     for (i, poke_move) in p1_c.moves.iter().enumerate() {
         if let PokeMove::Damage(m) = poke_move {
-            let power = match m.unique_type {
-                UniqueType::NotUnique => m.power,
-                UniqueType::UniquePower => calc_unique_power(m),
-                UniqueType::Constant => {
+            let power = match m.damage_type {
+                DamageType::Normal => m.power,
+                DamageType::VaryingPower => calc_unique_power(m),
+                DamageType::Constant => {
                     let d = calc_constant_damage(m);
                     update(&mut damage, &mut index, d, i);
                     continue;

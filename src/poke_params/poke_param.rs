@@ -4,7 +4,7 @@ use crate::{
     simulations::calc_rank::calc_rank,
 };
 
-use super::{def_types::DefTypes, pokemon::Stats, types::Types};
+use super::{def_types::DefTypes, pokemon::Stats, types::Types, ranks::Ranks};
 
 #[derive(Debug, Clone)]
 pub struct PokeParam {
@@ -33,15 +33,8 @@ pub struct PokeParam {
     /// テラスは当然 mutable
     pub teras: Option<Types>,
 
-    pub atk_rank: i32,
-    pub def_rank: i32,
-    pub satk_rank: i32,
-    pub sdef_rank: i32,
-    pub speed_rank: i32,
-    pub accuracy_rank: i32,
-    pub evasion_rank: i32,
-    pub critical_rank: i32,
-
+    pub ranks : Ranks,
+    
     /// 小さくなっているかどうか
     pub is_small: bool,
 
@@ -64,20 +57,20 @@ pub enum ParadoxBoost {
 
 impl PokeParam {
     pub fn atk(&self) -> u32 {
-        calc_rank(self.stats.atk(), self.atk_rank)
+        calc_rank(self.stats.atk(), self.ranks.atk())
     }
     pub fn def(&self) -> u32 {
-        calc_rank(self.stats.def(), self.def_rank)
+        calc_rank(self.stats.def(), self.ranks.def())
     }
     pub fn satk(&self) -> u32 {
-        calc_rank(self.stats.satk(), self.satk_rank)
+        calc_rank(self.stats.satk(), self.ranks.satk())
     }
     pub fn sdef(&self) -> u32 {
-        calc_rank(self.stats.sdef(), self.sdef_rank)
+        calc_rank(self.stats.sdef(), self.ranks.sdef())
     }
 
     pub fn speed(&self) -> u32 {
-        calc_rank(self.stats.speed(), self.speed_rank)
+        calc_rank(self.stats.speed(), self.ranks.speed())
     }
 
 	pub fn atk_raw(&self) -> u32{

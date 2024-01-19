@@ -2,7 +2,10 @@ use std::{collections::HashMap, str::FromStr, sync::OnceLock};
 
 use serde::Deserialize;
 
-use crate::{pnum::PNum, poke_params::types::Types};
+use crate::{
+    pnum::PNum,
+    poke_params::{ranks::Ranks, types::Types},
+};
 
 use super::unique_move::UniqueMove;
 
@@ -14,10 +17,10 @@ pub enum MoveKind {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum UniqueType {
-    NotUnique,
-    ///威力の計算法がunique
-    UniquePower,
+pub enum DamageType {
+    Normal,
+    ///威力の計算法が特殊
+    VaryingPower,
     ///固定ダメージ
     Constant,
 }
@@ -26,37 +29,48 @@ pub enum UniqueType {
 pub struct DamageMove {
     pub name: String,
     pub kind: MoveKind,
-    pub unique_type: UniqueType,
+    pub damage_type: DamageType,
     pub unique_move: UniqueMove,
     pub move_type: Types,
     pub power: u32,
     /// そのうち使いたい
     //pub contact: bool,
     pub priority: i32,
-    pub drain: Option<PNum>,
+    pub rank_delta: Ranks,
+    pub drain: PNum,
+    pub is_normal: bool,
 }
 
 impl DamageMove {
     pub fn new(
         name: String,
         kind: MoveKind,
-        unique_type: UniqueType,
+        unique_type: DamageType,
         unique_move: UniqueMove,
         move_type: Types,
         power: u32,
         priority: i32,
-        drain: Option<PNum>,
+        rank_delta: Ranks,
+        drain: PNum,
     ) -> Self {
         Self {
             name,
             kind,
-            unique_type,
+            damage_type: unique_type,
             unique_move,
             move_type,
             power,
             priority,
+            rank_delta,
             drain,
+            is_normal: Self::is_normal(priority, rank_delta, drain),
         }
+    }
+
+    /// 使うたびに弱くなっていくような技は、ダメージが高くてもmost_damaging_moveとはみなせず、
+    /// 非normal_moveと考えて別枠で処理する必要がある。その場合 is_normal でfalseを返す
+    fn is_normal(priority: i32, rank_delta: Ranks, drain: PNum) -> bool {
+        priority == 0 && rank_delta == Ranks::default() && drain == PNum::V1
     }
 }
 
@@ -70,14 +84,14 @@ fn create_damage(
 ) -> DamageMove {
     let t = Types::from_str(&move_type).expect(&format!("{name}: there's no type '{move_type}'"));
     let (unique_type, unique_move) = if u == "" {
-        (UniqueType::NotUnique, UniqueMove::NotUnique)
+        (DamageType::Normal, UniqueMove::NotUnique)
     } else if u == "U" {
         (
-            UniqueType::UniquePower,
+            DamageType::VaryingPower,
             UniqueMove::from_str(&name).unwrap(),
         )
     } else if u == "C" {
-        (UniqueType::Constant, UniqueMove::from_str(&name).unwrap())
+        (DamageType::Constant, UniqueMove::from_str(&name).unwrap())
     } else {
         panic!("{name}: last arg '{u}' can't be recognized")
     };
@@ -89,7 +103,8 @@ fn create_damage(
         t,
         power,
         o.priority.unwrap_or(0),
-        o.drain.map(|v| PNum::from_percent(v)),
+		o.rank(),
+        o.drain.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
     )
 }
 
@@ -103,6 +118,26 @@ pub enum DamageMoveSyntax {
 pub struct Options {
     pub priority: Option<i32>,
     pub drain: Option<u32>,
+    pub atk: Option<i32>,
+    pub def: Option<i32>,
+    pub satk: Option<i32>,
+    pub sdef: Option<i32>,
+    pub speed: Option<i32>,
+}
+
+impl Options {
+    fn rank(&self) -> Ranks {
+        fn a(a: Option<i32>) -> i32 {
+            a.unwrap_or(0)
+        }
+        Ranks::new(
+            a(self.atk),
+            a(self.def),
+            a(self.satk),
+            a(self.sdef),
+            a(self.speed),
+        )
+    }
 }
 
 impl DamageMoveSyntax {
