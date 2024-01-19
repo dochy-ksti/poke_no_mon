@@ -2,7 +2,7 @@ use crate::pnum::PNum;
 
 use super::calc_rank::calc_rank;
 
-pub struct CalcMainResult {
+pub struct CalcDmgResult {
     pub min: u32,
     pub max: u32,
     pub avg: u32,
@@ -20,10 +20,10 @@ pub fn calculate_damage_main(
     atk_appliers: &[PNum],
     def_appliers: &[PNum],
     damage_appliers: &[PNum],
-) -> CalcMainResult {
+) -> CalcDmgResult {
     let power = calc_power(move_power, power_appliers, teras_boost);
     let atk = calc_atk(atk, atk_appliers);
-    let def = calc_def(def,  def_appliers);
+    let def = calc_def(def, def_appliers);
     let d = (level * 2) / 5 + 2;
     let d = (d * power * atk) / def;
     let d = d / 50 + 2;
@@ -32,7 +32,7 @@ pub fn calculate_damage_main(
     let avg = (d * 925) / 1000; //乱数の平均値0.925
 
     let damage_applier = calc_applier(damage_appliers);
-    CalcMainResult {
+    CalcDmgResult {
         min: rest(min, atk_type_boost, type_effectiveness, damage_applier),
         avg: rest(avg, atk_type_boost, type_effectiveness, damage_applier),
         max: rest(max, atk_type_boost, type_effectiveness, damage_applier),
@@ -76,7 +76,7 @@ fn calc_atk(atk: u32, atk_appliers: &[PNum]) -> u32 {
     }
 }
 
-fn calc_def(def: u32,  def_appliers: &[PNum]) -> u32 {
+fn calc_def(def: u32, def_appliers: &[PNum]) -> u32 {
     let def = calc_applier(def_appliers).apply5(def);
     //本来天候の計算が入るが今はまだ使ってない
     if def == 0 {
@@ -93,5 +93,3 @@ fn calc_applier(appliers: &[PNum]) -> PNum {
     }
     v
 }
-
-

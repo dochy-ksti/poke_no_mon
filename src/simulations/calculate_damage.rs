@@ -7,7 +7,7 @@ use crate::{
     poke_params::{poke_const::PokeConst, poke_param::PokeParam},
 };
 
-use super::calculate_damage_main::{calculate_damage_main, CalcMainResult};
+use super::calculate_damage_main::{calculate_damage_main, CalcDmgResult};
 
 /// 参考資料
 /// https://latest.pokewiki.net/%E3%83%90%E3%83%88%E3%83%AB%E4%B8%AD%E3%81%AE%E5%87%A6%E7%90%86%E3%81%AE%E9%A0%86%E7%95%AA
@@ -17,7 +17,7 @@ pub fn calculate_damage(
     move_power: u32,
     m: &DamageMove,
     p2: &PokeParam,
-) -> CalcMainResult {
+) -> CalcDmgResult {
     let level = p1_c.level;
     let (atk, def) = match m.kind {
         MoveKind::Physical => (p1.atk(), p2.def()),
