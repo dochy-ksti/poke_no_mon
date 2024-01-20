@@ -9,14 +9,14 @@ use crate::{
 
 use super::unique_move::UniqueMove;
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum MoveKind {
     Physical,
     Special,
     Status,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum DamageType {
     Normal,
     ///威力の計算法が特殊
@@ -24,6 +24,13 @@ pub enum DamageType {
     ///固定ダメージ
     Constant,
 }
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum TestType{
+	BattleTest,
+	CompareNum,
+}
+
 
 #[derive(Debug)]
 pub struct DamageMove {
@@ -38,7 +45,10 @@ pub struct DamageMove {
     pub priority: i32,
     pub rank_delta: Ranks,
     pub drain: PNum,
-    pub is_normal: bool,
+	pub recoil : PNum,
+	/// 0~3
+	pub critical : u32,
+    pub test_type : TestType,
 }
 
 impl DamageMove {
@@ -52,6 +62,8 @@ impl DamageMove {
         priority: i32,
         rank_delta: Ranks,
         drain: PNum,
+		recoil: PNum,
+		critical: u32,
     ) -> Self {
         Self {
             name,
@@ -63,14 +75,20 @@ impl DamageMove {
             priority,
             rank_delta,
             drain,
-            is_normal: Self::is_normal(priority, rank_delta, drain),
+			recoil,
+			critical,
+            test_type: Self::test_type(rank_delta, drain, recoil),
         }
     }
 
     /// 使うたびに弱くなっていくような技は、ダメージが高くてもmost_damaging_moveとはみなせず、
-    /// 非normal_moveと考えて別枠で処理する必要がある。その場合 is_normal でfalseを返す
-    fn is_normal(priority: i32, rank_delta: Ranks, drain: PNum) -> bool {
-        priority == 0 && rank_delta == Ranks::default() && drain == PNum::V1
+	/// Drainする技や、反動がある技、防御が下がる技など、相手と殴り合わないと結果が見えない技もある。
+    fn test_type(rank_delta: Ranks, drain: PNum, recoil : PNum) -> TestType {
+        if rank_delta == Ranks::default() && drain == PNum::V1 && recoil == PNum::V1{
+			TestType::BattleTest
+		} else{
+			TestType::CompareNum
+		}
     }
 }
 
@@ -93,7 +111,7 @@ fn create_damage(
     } else if u == "C" {
         (DamageType::Constant, UniqueMove::from_str(&name).unwrap())
     } else {
-        panic!("{name}: last arg '{u}' can't be recognized")
+        panic!("{name}: the last arg '{u}' couldn't be recognized")
     };
     DamageMove::new(
         name,
@@ -103,8 +121,10 @@ fn create_damage(
         t,
         power,
         o.priority.unwrap_or(0),
-		o.rank(),
+        o.rank(),
         o.drain.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
+		o.recoil.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
+		o.critical.unwrap_or(0),
     )
 }
 
@@ -118,6 +138,8 @@ pub enum DamageMoveSyntax {
 pub struct Options {
     pub priority: Option<i32>,
     pub drain: Option<u32>,
+	pub recoil: Option<u32>,
+	pub critical : Option<u32>,
     pub atk: Option<i32>,
     pub def: Option<i32>,
     pub satk: Option<i32>,
