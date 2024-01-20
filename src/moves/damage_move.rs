@@ -26,11 +26,10 @@ pub enum DamageType {
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
-pub enum TestType{
-	BattleTest,
-	CompareNum,
+pub enum TestType {
+    BattleTest,
+    CompareNum,
 }
-
 
 #[derive(Debug)]
 pub struct DamageMove {
@@ -44,12 +43,12 @@ pub struct DamageMove {
     //pub contact: bool,
     pub priority: i32,
     pub rank_delta: Ranks,
-	pub oppo_rank_delta: Ranks,
+    pub oppo_rank_delta: Ranks,
     pub drain: PNum,
-	pub recoil : PNum,
-	/// 0~3
-	pub critical : u32,
-    pub test_type : TestType,
+    pub recoil: PNum,
+    /// 0~3
+    pub critical: u32,
+    pub test_type: TestType,
 }
 
 impl DamageMove {
@@ -62,10 +61,10 @@ impl DamageMove {
         power: u32,
         priority: i32,
         rank_delta: Ranks,
-		oppo_rank_delta: Ranks,
+        oppo_rank_delta: Ranks,
         drain: PNum,
-		recoil: PNum,
-		critical: u32,
+        recoil: PNum,
+        critical: u32,
     ) -> Self {
         Self {
             name,
@@ -76,22 +75,26 @@ impl DamageMove {
             power,
             priority,
             rank_delta,
-			oppo_rank_delta,
+            oppo_rank_delta,
             drain,
-			recoil,
-			critical,
-            test_type: Self::test_type(rank_delta, drain, recoil),
+            recoil,
+            critical,
+            test_type: Self::test_type(rank_delta, oppo_rank_delta, drain, recoil),
         }
     }
 
     /// 使うたびに弱くなっていくような技は、ダメージが高くてもmost_damaging_moveとはみなせず、
-	/// Drainする技や、反動がある技、防御が下がる技など、相手と殴り合わないと結果が見えない技もある。
-    fn test_type(rank_delta: Ranks, drain: PNum, recoil : PNum) -> TestType {
-        if rank_delta == Ranks::default() && drain == PNum::V1 && recoil == PNum::V1{
-			TestType::BattleTest
-		} else{
-			TestType::CompareNum
-		}
+    /// Drainする技や、反動がある技、防御が下がる技など、相手と殴り合わないと結果が見えない技もある。
+    fn test_type(rank_delta: Ranks, oppo_rank_delta: Ranks, drain: PNum, recoil: PNum) -> TestType {
+        if rank_delta == Ranks::default()
+            && oppo_rank_delta == Ranks::default()
+            && drain == PNum::V1
+            && recoil == PNum::V1
+        {
+            TestType::BattleTest
+        } else {
+            TestType::CompareNum
+        }
     }
 }
 
@@ -125,10 +128,10 @@ fn create_damage(
         power,
         o.priority.unwrap_or(0),
         o.rank(),
-		o.oppo_rank(),
+        o.oppo_rank(),
         o.drain.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
-		o.recoil.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
-		o.critical.unwrap_or(0),
+        o.recoil.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
+        o.critical.unwrap_or(0),
     )
 }
 
@@ -142,19 +145,18 @@ pub enum DamageMoveSyntax {
 pub struct Options {
     pub priority: Option<i32>,
     pub drain: Option<u32>,
-	pub recoil: Option<u32>,
-	pub critical : Option<u32>,
+    pub recoil: Option<u32>,
+    pub critical: Option<u32>,
     pub atk: Option<i32>,
     pub def: Option<i32>,
     pub satk: Option<i32>,
     pub sdef: Option<i32>,
     pub speed: Option<i32>,
-	pub oppo_atk: Option<i32>,
+    pub oppo_atk: Option<i32>,
     pub oppo_def: Option<i32>,
     pub oppo_satk: Option<i32>,
     pub oppo_sdef: Option<i32>,
     pub oppo_speed: Option<i32>,
-	
 }
 
 impl Options {
@@ -171,7 +173,7 @@ impl Options {
         )
     }
 
-	fn oppo_rank(&self) -> Ranks {
+    fn oppo_rank(&self) -> Ranks {
         fn a(a: Option<i32>) -> i32 {
             a.unwrap_or(0)
         }
