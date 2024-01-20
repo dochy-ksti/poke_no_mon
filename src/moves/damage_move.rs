@@ -44,6 +44,7 @@ pub struct DamageMove {
     //pub contact: bool,
     pub priority: i32,
     pub rank_delta: Ranks,
+	pub oppo_rank_delta: Ranks,
     pub drain: PNum,
 	pub recoil : PNum,
 	/// 0~3
@@ -61,6 +62,7 @@ impl DamageMove {
         power: u32,
         priority: i32,
         rank_delta: Ranks,
+		oppo_rank_delta: Ranks,
         drain: PNum,
 		recoil: PNum,
 		critical: u32,
@@ -74,6 +76,7 @@ impl DamageMove {
             power,
             priority,
             rank_delta,
+			oppo_rank_delta,
             drain,
 			recoil,
 			critical,
@@ -122,6 +125,7 @@ fn create_damage(
         power,
         o.priority.unwrap_or(0),
         o.rank(),
+		o.oppo_rank(),
         o.drain.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
 		o.recoil.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
 		o.critical.unwrap_or(0),
@@ -145,6 +149,12 @@ pub struct Options {
     pub satk: Option<i32>,
     pub sdef: Option<i32>,
     pub speed: Option<i32>,
+	pub oppo_atk: Option<i32>,
+    pub oppo_def: Option<i32>,
+    pub oppo_satk: Option<i32>,
+    pub oppo_sdef: Option<i32>,
+    pub oppo_speed: Option<i32>,
+	
 }
 
 impl Options {
@@ -158,6 +168,19 @@ impl Options {
             a(self.satk),
             a(self.sdef),
             a(self.speed),
+        )
+    }
+
+	fn oppo_rank(&self) -> Ranks {
+        fn a(a: Option<i32>) -> i32 {
+            a.unwrap_or(0)
+        }
+        Ranks::new(
+            a(self.oppo_atk),
+            a(self.oppo_def),
+            a(self.oppo_satk),
+            a(self.oppo_sdef),
+            a(self.oppo_speed),
         )
     }
 }
