@@ -7,7 +7,7 @@ use crate::{
     poke_params::{ranks::Ranks, types::Types},
 };
 
-use super::unique_move::UniqueMove;
+use super::{unique_move::UniqueMove, percent::Percent};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum MoveKind {
@@ -44,8 +44,8 @@ pub struct DamageMove {
     pub priority: i32,
     pub rank_delta: Ranks,
     pub oppo_rank_delta: Ranks,
-    pub drain: PNum,
-    pub recoil: PNum,
+    pub drain: Percent,
+    pub recoil: Percent,
     /// 0~3
     pub critical: u32,
     pub test_type: TestType,
@@ -62,8 +62,8 @@ impl DamageMove {
         priority: i32,
         rank_delta: Ranks,
         oppo_rank_delta: Ranks,
-        drain: PNum,
-        recoil: PNum,
+        drain: Percent,
+        recoil: Percent,
         critical: u32,
     ) -> Self {
         Self {
@@ -85,15 +85,15 @@ impl DamageMove {
 
     /// 使うたびに弱くなっていくような技は、ダメージが高くてもmost_damaging_moveとはみなせず、
     /// Drainする技や、反動がある技、防御が下がる技など、相手と殴り合わないと結果が見えない技もある。
-    fn test_type(rank_delta: Ranks, oppo_rank_delta: Ranks, drain: PNum, recoil: PNum) -> TestType {
+    fn test_type(rank_delta: Ranks, oppo_rank_delta: Ranks, drain: Percent, recoil: Percent) -> TestType {
         if rank_delta == Ranks::default()
             && oppo_rank_delta == Ranks::default()
-            && drain == PNum::V1
-            && recoil == PNum::V1
+            && drain == Percent::V0
+            && recoil == Percent::V0
         {
-            TestType::BattleTest
-        } else {
             TestType::CompareNum
+        } else {
+            TestType::BattleTest
         }
     }
 }
@@ -129,8 +129,8 @@ fn create_damage(
         o.priority.unwrap_or(0),
         o.rank(),
         o.oppo_rank(),
-        o.drain.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
-        o.recoil.map(|v| PNum::from_percent(v)).unwrap_or(PNum::V0),
+        o.drain.map(|v| Percent::new(v)).unwrap_or(Percent::V0),
+        o.recoil.map(|v| Percent::new(v)).unwrap_or(Percent::V0),
         o.critical.unwrap_or(0),
     )
 }
