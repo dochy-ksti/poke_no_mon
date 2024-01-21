@@ -1,8 +1,9 @@
 use crate::{
     appliers::{applier::Applier, calc_appliers::calc_appliers},
     moves::{
-        damage_move::{DamageMove, MoveKind, DamageType},
-        unique_move::UniqueMove, calc_varying_power::calc_varying_power,
+        calc_varying_power::calc_varying_power,
+        damage_move::{DamageMove, DamageType, MoveKind},
+        unique_move::UniqueMove,
     },
     poke_params::{poke_const::PokeConst, poke_param::PokeParam},
 };
@@ -16,24 +17,27 @@ pub fn calculate_damage(
     p1_c: &PokeConst,
     m: &DamageMove,
     p2: &PokeParam,
-	p2_c: &PokeConst,
+    p2_c: &PokeConst,
 ) -> CalcDmgResult {
     let level = p1_c.level;
-    let (atk, def) = match m.kind {
-        MoveKind::Physical => (p1.atk(), p2.def()),
-        MoveKind::Special =>{ 
-			match m.unique_move{
-				UniqueMove::サイコショック => (p1.satk(), p2.def()),
-				_ => (p1.satk(), p2.sdef())
-			}
-		}
+    let (atk, atk_rank, def, def_rank) = match m.kind {
+        MoveKind::Physical => (p1.atk(), p1.atk_rank(), p2.def(), p2.def_rank()),
+        MoveKind::Special => match m.unique_move {
+            UniqueMove::サイコショック => {
+                (p1.satk(), p1.satk_rank(), p2.def(), p2.def_rank())
+            }
+            _ => (p1.satk(), p1.satk_rank(), p2.sdef(), p2.sdef_rank()),
+        },
         MoveKind::Status => panic!("Damage can't be calculated for status moves"),
     };
-	let move_power = if m.damage_type == DamageType::VaryingPower{
-		calc_varying_power(p1, p1_c, m, p2, p2_c)
-	} else{
-		m.power
-	};
+    let move_power = if m.damage_type == DamageType::VaryingPower {
+        calc_varying_power(p1, p1_c, m, p2, p2_c)
+    } else {
+        m.power
+    };
+    //　急所ランク3以上は確定急所。ここでは確定してないものは考えない
+    let critical = 3 <= p1.critical_rank() + m.critical as i32;
+
     let atk_type_boost = p1.def_types.contains(m.move_type);
     let teras_boost = if let Some(t) = p1.teras {
         t == m.move_type
@@ -55,7 +59,10 @@ pub fn calculate_damage(
         level,
         move_power,
         atk,
+        atk_rank,
         def,
+        def_rank,
+        critical,
         atk_type_boost,
         teras_boost,
         type_effectiveness,

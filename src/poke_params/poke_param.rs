@@ -4,7 +4,7 @@ use crate::{
     simulations::calc_rank::calc_rank,
 };
 
-use super::{def_types::DefTypes, pokemon::Stats, types::Types, ranks::Ranks};
+use super::{def_types::DefTypes, pokemon::Stats, ranks::Ranks, types::Types};
 
 #[derive(Debug, Clone)]
 pub struct PokeParam {
@@ -14,7 +14,7 @@ pub struct PokeParam {
     pub level: u32,
     /// stats は mutable(メテノとか、なんとかスワップとかで実数値を直接変更することがある)
     pub stats: Stats,
-	pub hp : u32,
+    pub hp: u32,
     /// weight は ボディパージで変化するようだ。かるいしをはたき落とされたりもありうるか。
     pub weight: u32,
     /// type は mutable。みずびたしとか
@@ -33,8 +33,8 @@ pub struct PokeParam {
     /// テラスは当然 mutable
     pub teras: Option<Types>,
 
-    pub ranks : Ranks,
-    
+    pub ranks: Ranks,
+
     /// 小さくなっているかどうか
     pub is_small: bool,
 
@@ -56,40 +56,65 @@ pub enum ParadoxBoost {
 }
 
 impl PokeParam {
-    pub fn atk(&self) -> u32 {
+    pub fn ranked_atk(&self) -> u32 {
         calc_rank(self.stats.atk(), self.ranks.atk())
     }
-    pub fn def(&self) -> u32 {
+    pub fn ranked_def(&self) -> u32 {
         calc_rank(self.stats.def(), self.ranks.def())
     }
-    pub fn satk(&self) -> u32 {
+    pub fn ranked_satk(&self) -> u32 {
         calc_rank(self.stats.satk(), self.ranks.satk())
     }
-    pub fn sdef(&self) -> u32 {
+    pub fn ranked_sdef(&self) -> u32 {
         calc_rank(self.stats.sdef(), self.ranks.sdef())
     }
 
-    pub fn speed(&self) -> u32 {
+    pub fn ranked_speed(&self) -> u32 {
         calc_rank(self.stats.speed(), self.ranks.speed())
     }
 
-	pub fn atk_raw(&self) -> u32{
-		self.stats.atk()
-	}
+    pub fn atk(&self) -> u32 {
+        self.stats.atk()
+    }
 
-	pub fn def_raw(&self) -> u32{
-		self.stats.def()
-	}
-	pub fn satk_raw(&self) -> u32{
-		self.stats.satk()
-	}
-	pub fn sdef_raw(&self) -> u32{
-		self.stats.sdef()
-	}
+    pub fn def(&self) -> u32 {
+        self.stats.def()
+    }
+    pub fn satk(&self) -> u32 {
+        self.stats.satk()
+    }
+    pub fn sdef(&self) -> u32 {
+        self.stats.sdef()
+    }
 
-    pub fn speed_raw(&self) -> u32 {
+    pub fn speed(&self) -> u32 {
         self.stats.speed()
     }
+
+	pub fn atk_rank(&self) -> i32{
+		self.ranks.atk()
+	}
+
+	pub fn def_rank(&self) -> i32{
+		self.ranks.def()
+	}
+
+	pub fn satk_rank(&self) -> i32{
+		self.ranks.satk()
+	}
+
+	pub fn sdef_rank(&self) -> i32{
+		self.ranks.sdef()
+	}
+
+	pub fn speed_rank(&self) -> i32{
+		self.ranks.speed()
+	}
+
+	pub fn critical_rank(&self) -> i32{
+		self.ranks.critical()
+	}
+	
 
     pub fn paradox_boost(&self) -> ParadoxBoost {
         // 両方ともNone以外になるということはない。あってはならない。
@@ -99,4 +124,23 @@ impl PokeParam {
             return self.boost_energy;
         }
     }
+
+	pub fn max_hp(&self) -> u32{
+		self.stats.hp()
+	}
+
+	pub fn restore_hp(&mut self, val : u32){
+		self.hp += val;
+		if self.max_hp() <  self.hp{
+			self.hp = self.max_hp()
+		}
+	}
+
+	pub fn inflict_damage(&mut self, val : u32){
+		if self.hp < val{
+			self.hp = 0;
+		} else{
+			self.hp -= val;
+		}
+	}
 }

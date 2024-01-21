@@ -12,7 +12,10 @@ pub fn calculate_damage_main(
     level: u32,
     move_power: u32,
     atk: u32,
+    atk_rank: i32,
     def: u32,
+    def_rank: i32,
+    critical: bool,
     atk_type_boost: bool,
     teras_boost: bool,
     type_effectiveness: PNum,
@@ -22,11 +25,16 @@ pub fn calculate_damage_main(
     damage_appliers: &[PNum],
 ) -> CalcDmgResult {
     let power = calc_power(move_power, power_appliers, teras_boost);
-    let atk = calc_atk(atk, atk_appliers);
-    let def = calc_def(def, def_appliers);
+    let atk = calc_atk(atk, atk_rank, atk_appliers, critical);
+    let def = calc_def(def, def_rank, def_appliers, critical);
     let d = (level * 2) / 5 + 2;
     let d = (d * power * atk) / def;
     let d = d / 50 + 2;
+    let d = if critical {
+        PNum::V1_5.apply5(d)
+    } else {
+        d
+    };
     let min = d * 85 / 100;
     let max = d;
     let avg = (d * 925) / 1000; //乱数の平均値0.925
@@ -67,7 +75,13 @@ fn calc_power(move_power: u32, power_appliers: &[PNum], teras_boost: bool) -> u3
     power
 }
 
-fn calc_atk(atk: u32, atk_appliers: &[PNum]) -> u32 {
+fn calc_atk(atk: u32, atk_rank: i32, atk_appliers: &[PNum], critical: bool) -> u32 {
+    let atk_rank = if critical && atk_rank < 0 {
+        0
+    } else {
+        atk_rank
+    };
+    let atk = calc_rank(atk, atk_rank);
     let atk = calc_applier(atk_appliers).apply5(atk);
     if atk == 0 {
         1
@@ -76,7 +90,13 @@ fn calc_atk(atk: u32, atk_appliers: &[PNum]) -> u32 {
     }
 }
 
-fn calc_def(def: u32, def_appliers: &[PNum]) -> u32 {
+fn calc_def(def: u32, def_rank: i32, def_appliers: &[PNum], critical: bool) -> u32 {
+    let def_rank = if critical && 0 < def_rank {
+        0
+    } else {
+        def_rank
+    };
+    let def = calc_rank(def, def_rank);
     let def = calc_applier(def_appliers).apply5(def);
     //本来天候の計算が入るが今はまだ使ってない
     if def == 0 {

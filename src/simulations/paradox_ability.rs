@@ -31,11 +31,11 @@ pub fn paradox_ability(p: &mut PokeParam, env: &mut Environment) {
 
 fn activate(p: &mut PokeParam) -> ParadoxBoost {
     let c: [(ParadoxBoost, u32); 5] = [
-        (ParadoxBoost::Speed, p.speed()),
-        (ParadoxBoost::SDef, p.sdef()),
-        (ParadoxBoost::SAtk, p.satk()),
-        (ParadoxBoost::Def, p.def()),
-        (ParadoxBoost::Atk, p.atk()),
+        (ParadoxBoost::Speed, p.ranked_speed()),
+        (ParadoxBoost::SDef, p.ranked_sdef()),
+        (ParadoxBoost::SAtk, p.ranked_satk()),
+        (ParadoxBoost::Def, p.ranked_def()),
+        (ParadoxBoost::Atk, p.ranked_atk()),
     ];
     //同値の場合下が優先
     return c.into_iter().max_by_key(|a| a.1).unwrap().0;

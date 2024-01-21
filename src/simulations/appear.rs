@@ -46,10 +46,10 @@ fn appear_inner1(p1: &mut PokeParam, p2: &mut PokeParam, env: &mut Environment, 
 fn appear_inner2(p1: &mut PokeParam, p2: &mut PokeParam, env: &mut Environment, is_appear2: bool) {
     let mut sp;
     if is_appear2 {
-        sp = Speeder::appear2(p1, p2, p1.speed_raw(), p2.speed_raw(), env);
+        sp = Speeder::appear2(p1, p2, p1.speed(), p2.speed(), env);
     } else {
         //実際はappear1に変える必要あり
-        sp = Speeder::appear2(p1, p2, p1.speed_raw(), p2.speed_raw(), env);
+        sp = Speeder::appear2(p1, p2, p1.speed(), p2.speed(), env);
     }
     sp.do1(paradox_ability);
 }
