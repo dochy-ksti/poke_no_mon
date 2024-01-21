@@ -7,7 +7,7 @@ use crate::{
     poke_params::{ranks::Ranks, types::Types},
 };
 
-use super::{unique_move::UniqueMove, percent::Percent};
+use super::{percent::Percent, unique_move::UniqueMove};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum MoveKind {
@@ -19,8 +19,10 @@ pub enum MoveKind {
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum DamageType {
     Normal,
-    ///威力の計算法が特殊
+    ///威力の計算法が普通と違う
     VaryingPower,
+    ///威力以外が普通と違う
+    Unique,
     ///固定ダメージ
     Constant,
 }
@@ -55,7 +57,7 @@ impl DamageMove {
     pub fn new(
         name: String,
         kind: MoveKind,
-        unique_type: DamageType,
+        damage_type: DamageType,
         unique_move: UniqueMove,
         move_type: Types,
         power: u32,
@@ -69,7 +71,7 @@ impl DamageMove {
         Self {
             name,
             kind,
-            damage_type: unique_type,
+            damage_type,
             unique_move,
             move_type,
             power,
@@ -85,7 +87,12 @@ impl DamageMove {
 
     /// 使うたびに弱くなっていくような技は、ダメージが高くてもmost_damaging_moveとはみなせず、
     /// Drainする技や、反動がある技、防御が下がる技など、相手と殴り合わないと結果が見えない技もある。
-    fn test_type(rank_delta: Ranks, oppo_rank_delta: Ranks, drain: Percent, recoil: Percent) -> TestType {
+    fn test_type(
+        rank_delta: Ranks,
+        oppo_rank_delta: Ranks,
+        drain: Percent,
+        recoil: Percent,
+    ) -> TestType {
         if rank_delta == Ranks::default()
             && oppo_rank_delta == Ranks::default()
             && drain == Percent::V0
@@ -107,9 +114,11 @@ fn create_damage(
     o: Options,
 ) -> DamageMove {
     let t = Types::from_str(&move_type).expect(&format!("{name}: there's no type '{move_type}'"));
-    let (unique_type, unique_move) = if u == "" {
+    let (damage_type, unique_move) = if u == "" {
         (DamageType::Normal, UniqueMove::NotUnique)
     } else if u == "U" {
+        (DamageType::Unique, UniqueMove::from_str(&name).unwrap())
+    } else if u == "V" {
         (
             DamageType::VaryingPower,
             UniqueMove::from_str(&name).unwrap(),
@@ -122,7 +131,7 @@ fn create_damage(
     DamageMove::new(
         name,
         kind,
-        unique_type,
+        damage_type,
         unique_move,
         t,
         power,

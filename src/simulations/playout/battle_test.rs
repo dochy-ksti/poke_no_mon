@@ -16,6 +16,8 @@ pub fn battling(
 
 }
 
+fn turn()
+
 fn do_damage(p1 : &PokeParam, p1_move : &DamageMove, p2 : &PokeParam){
 	p1_move.
 }
