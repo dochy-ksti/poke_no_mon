@@ -77,10 +77,11 @@ fn do_damage(
     };
     p2.inflict_damage(damage);
 
+    //四捨五入になっているがもしかすると五捨五超入かもしれない。そうでないというソースが見つからない。
     let drain = m.drain.calc4(damage);
     let recoil = m.recoil.calc4(damage);
+
     //ドレインと反動が一つの技で両方起きることは今のところないので、どういう順番で処理しても良いはず
-    //もしかすると五捨五超入かもしれない。そうでないというソースが見つからない。
     p1.restore_hp(drain);
     p1.inflict_damage(recoil);
 
@@ -102,21 +103,21 @@ fn do_damage(
                 return Some(PlayoutResult::p1_wins(turn, p2.hp));
             }
         }
-    } else{
-		if p1.hp == 0 {
+    } else {
+        if p1.hp == 0 {
             if p1_is_p1 {
                 return Some(PlayoutResult::p2_wins(turn, p2.hp));
             } else {
                 return Some(PlayoutResult::p1_wins(turn, p2.hp));
             }
         }
-		if p2.hp == 0 {
+        if p2.hp == 0 {
             if p1_is_p1 {
                 return Some(PlayoutResult::p1_wins(turn, p1.hp));
             } else {
                 return Some(PlayoutResult::p2_wins(turn, p1.hp));
             }
         }
-	}
+    }
     return None;
 }
