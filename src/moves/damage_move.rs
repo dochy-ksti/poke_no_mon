@@ -50,40 +50,12 @@ pub struct DamageMove {
     pub recoil: Percent,
     /// 0~3
     pub critical: u32,
+	pub self_destruct : bool,
     pub test_type: TestType,
 }
 
 impl DamageMove {
-    pub fn new(
-        name: String,
-        kind: MoveKind,
-        damage_type: DamageType,
-        unique_move: UniqueMove,
-        move_type: Types,
-        power: u32,
-        priority: i32,
-        rank_delta: Ranks,
-        oppo_rank_delta: Ranks,
-        drain: Percent,
-        recoil: Percent,
-        critical: u32,
-    ) -> Self {
-        Self {
-            name,
-            kind,
-            damage_type,
-            unique_move,
-            move_type,
-            power,
-            priority,
-            rank_delta,
-            oppo_rank_delta,
-            drain,
-            recoil,
-            critical,
-            test_type: Self::test_type(rank_delta, oppo_rank_delta, drain, recoil),
-        }
-    }
+    
 
     /// 使うたびに弱くなっていくような技は、ダメージが高くてもmost_damaging_moveとはみなせず、
     /// Drainする技や、反動がある技、防御が下がる技など、相手と殴り合わないと結果が見えない技もある。
@@ -113,7 +85,7 @@ fn create_damage(
     u: String,
     o: Options,
 ) -> DamageMove {
-    let t = Types::from_str(&move_type).expect(&format!("{name}: there's no type '{move_type}'"));
+    let move_type = Types::from_str(&move_type).expect(&format!("{name}: there's no type '{move_type}'"));
     let (damage_type, unique_move) = if u == "" {
         (DamageType::Normal, UniqueMove::NotUnique)
     } else if u == "U" {
@@ -128,20 +100,29 @@ fn create_damage(
     } else {
         panic!("{name}: the last arg '{u}' couldn't be recognized")
     };
-    DamageMove::new(
+	let priority = o.priority.unwrap_or(0);
+	let rank_delta = o.rank();
+	let oppo_rank_delta = o.oppo_rank();
+	let drain = o.drain.map(|v| Percent::new(v)).unwrap_or(Percent::V0);
+	let recoil = o.recoil.map(|v| Percent::new(v)).unwrap_or(Percent::V0);
+	let critical = o.critical.unwrap_or(0);
+	let self_destruct = o.self_destruct.is_some();
+    DamageMove{
         name,
         kind,
         damage_type,
         unique_move,
-        t,
+        move_type,
         power,
-        o.priority.unwrap_or(0),
-        o.rank(),
-        o.oppo_rank(),
-        o.drain.map(|v| Percent::new(v)).unwrap_or(Percent::V0),
-        o.recoil.map(|v| Percent::new(v)).unwrap_or(Percent::V0),
-        o.critical.unwrap_or(0),
-    )
+        priority,
+        rank_delta,
+        oppo_rank_delta,
+        drain,
+        recoil, 
+        critical,
+		self_destruct,
+		test_type: DamageMove::test_type(rank_delta, oppo_rank_delta, drain, recoil)
+	}
 }
 
 #[derive(Debug, Deserialize)]
@@ -166,6 +147,7 @@ pub struct Options {
     pub oppo_satk: Option<i32>,
     pub oppo_sdef: Option<i32>,
     pub oppo_speed: Option<i32>,
+	pub self_destruct: Option<String>,
 }
 
 impl Options {

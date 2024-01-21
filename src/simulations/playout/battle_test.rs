@@ -60,24 +60,63 @@ fn p1_plays_first(
 }
 
 /// 基本的に、p1は自分、p2は相手、であるが、評価値を出すときにはこの「自分」がもともとP1だったかが問題になる。p1_is_p1で調べられるようにする
-fn do_damage(turn : u32, p1_is_p1 : bool, p1: &mut PokeParam, p1_c: &PokeConst, m: &DamageMove, p2: &mut PokeParam, p2_c: &PokeConst) -> Option<PlayoutResult>{
+fn do_damage(
+    turn: u32,
+    p1_is_p1: bool,
+    p1: &mut PokeParam,
+    p1_c: &PokeConst,
+    m: &DamageMove,
+    p2: &mut PokeParam,
+    p2_c: &PokeConst,
+) -> Option<PlayoutResult> {
     let original_damage = calculate_damage(p1, p1_c, m, p2, p2_c);
     let damage = if p2.hp < original_damage.avg {
         p2.hp
     } else {
         original_damage.avg
     };
-	p2.inflict_damage(damage);
+    p2.inflict_damage(damage);
 
     let drain = m.drain.calc4(damage);
     let recoil = m.recoil.calc4(damage);
-	//ドレインと反動が一つの技で両方起きることは今のところないので、どういう順番で処理しても良いはず
-	p1.restore_hp(drain);
-	p1.inflict_damage(recoil);
-	//もしかすると五捨五超入かもしれない。そうでないというソースが見つからない。
+    //ドレインと反動が一つの技で両方起きることは今のところないので、どういう順番で処理しても良いはず
+    //もしかすると五捨五超入かもしれない。そうでないというソースが見つからない。
+    p1.restore_hp(drain);
+    p1.inflict_damage(recoil);
 
-	if p2.hp == 0{
-		Some(PlayoutResult{ })
+    p1.apply_rank_delta(&m.rank_delta);
+    p2.apply_rank_delta(&m.oppo_rank_delta);
+
+    if m.self_destruct == false {
+        if p2.hp == 0 {
+            if p1_is_p1 {
+                return Some(PlayoutResult::p1_wins(turn, p1.hp));
+            } else {
+                return Some(PlayoutResult::p2_wins(turn, p1.hp));
+            }
+        }
+        if p1.hp == 0 {
+            if p1_is_p1 {
+                return Some(PlayoutResult::p2_wins(turn, p2.hp));
+            } else {
+                return Some(PlayoutResult::p1_wins(turn, p2.hp));
+            }
+        }
+    } else{
+		if p1.hp == 0 {
+            if p1_is_p1 {
+                return Some(PlayoutResult::p2_wins(turn, p2.hp));
+            } else {
+                return Some(PlayoutResult::p1_wins(turn, p2.hp));
+            }
+        }
+		if p2.hp == 0 {
+            if p1_is_p1 {
+                return Some(PlayoutResult::p1_wins(turn, p1.hp));
+            } else {
+                return Some(PlayoutResult::p2_wins(turn, p1.hp));
+            }
+        }
 	}
-
+    return None;
 }

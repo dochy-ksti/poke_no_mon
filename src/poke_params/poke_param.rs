@@ -143,4 +143,8 @@ impl PokeParam {
 			self.hp -= val;
 		}
 	}
+
+	pub fn apply_rank_delta(&mut self, rank_delta : &Ranks){
+		self.ranks.apply_rank_delta(rank_delta);
+	}
 }
