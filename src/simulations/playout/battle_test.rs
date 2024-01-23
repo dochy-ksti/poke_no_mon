@@ -88,35 +88,23 @@ fn do_damage(
     p1.apply_rank_delta(&m.rank_delta);
     p2.apply_rank_delta(&m.oppo_rank_delta);
 
-    if m.self_destruct == false {
-        if p2.hp == 0 {
-            if p1_is_p1 {
-                return Some(PlayoutResult::p1_wins(turn, p1.hp));
-            } else {
-                return Some(PlayoutResult::p2_wins(turn, p1.hp));
-            }
-        }
+    if p2.hp == 0 {
         if p1.hp == 0 {
-            if p1_is_p1 {
-                return Some(PlayoutResult::p2_wins(turn, p2.hp));
-            } else {
-                return Some(PlayoutResult::p1_wins(turn, p2.hp));
-            }
+            return Some(PlayoutResult::not_end(
+                turn, p1_max_hp, p1_hp, p2_max_hp, p2_hp,
+            ));
         }
-    } else {
-        if p1.hp == 0 {
-            if p1_is_p1 {
-                return Some(PlayoutResult::p2_wins(turn, p2.hp));
-            } else {
-                return Some(PlayoutResult::p1_wins(turn, p2.hp));
-            }
+        if p1_is_p1 {
+            return Some(PlayoutResult::p1_wins(turn, p1.hp));
+        } else {
+            return Some(PlayoutResult::p2_wins(turn, p1.hp));
         }
-        if p2.hp == 0 {
-            if p1_is_p1 {
-                return Some(PlayoutResult::p1_wins(turn, p1.hp));
-            } else {
-                return Some(PlayoutResult::p2_wins(turn, p1.hp));
-            }
+    }
+    if p1.hp == 0 {
+        if p1_is_p1 {
+            return Some(PlayoutResult::p2_wins(turn, p2.hp));
+        } else {
+            return Some(PlayoutResult::p1_wins(turn, p2.hp));
         }
     }
     return None;
