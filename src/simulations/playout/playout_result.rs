@@ -84,6 +84,7 @@ impl PlayoutResult {
     }
 
 	pub fn both_dead() -> PlayoutResult{
-		PlayoutResult{ turns: 0, rest_hp : 0, hp_rate: 0.0}
+		//評価値上はドローと同じ扱いだが、最後の戦いだと先に倒れたほうが負けになる。
+		PlayoutResult{ turns: 0, rest_hp : 0, hp_rate: 1.0 }
 	}
 }

@@ -90,9 +90,7 @@ fn do_damage(
 
     if p2.hp == 0 {
         if p1.hp == 0 {
-            return Some(PlayoutResult::not_end(
-                turn, p1_max_hp, p1_hp, p2_max_hp, p2_hp,
-            ));
+            return Some(PlayoutResult::both_dead());
         }
         if p1_is_p1 {
             return Some(PlayoutResult::p1_wins(turn, p1.hp));
