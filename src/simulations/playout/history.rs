@@ -1,12 +1,8 @@
 
-/// 本当はLinkedListAllocatorを使ってアロック&フリーを低コストにしながら
-/// SinglyLinkedListで一つずつHistoryを付け加えていく実装にすれば深さ優先探索でのヒストリーの記録には
-/// 深さ*2のメモリしか必要ないはずなんだけど、いいライブラリがみつからない
-/// Effective C++にアロケータの作り方は書いてあったんだが...RustではAllocatorを書くのは一般的でないようだ。
-/// 毎回LinkedListNodeをallocしても全然問題ないとは思うが...32バイトのヒストリー記録構造体を返すことにする。
+/// 禁断のpremature optimization
 #[derive(Debug, Default)]
 pub struct History {
-    // 選択肢の数は256個まで、ということになる。
+    // 選択肢の数は256個まで、ということになる。本来は技4つ+交換2つで6手しかない。
     array: [u8; ARRAY_LEN],
 }
 
@@ -23,12 +19,12 @@ impl History {
         self.array[LEN_INDEX] as usize
     }
 
-    pub fn push(&mut self, val: u8) {
+    pub fn push(&mut self, val: usize) {
         let len = self.len();
         if LEN_INDEX <= len {
             panic!("History: Array Index Out of Bound")
         }
-        self.array[len] = val;
+        self.array[len] = val as u8;
         self.array[LEN_INDEX] += 1;
     }
 

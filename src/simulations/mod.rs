@@ -7,4 +7,3 @@ pub mod game_start;
 pub mod calc_speed;
 pub mod find_most_damaging_move;
 pub mod playout;
-pub mod history;

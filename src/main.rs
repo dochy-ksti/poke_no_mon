@@ -15,6 +15,9 @@ pub mod environment;
 // PokeWiki ダメージ
 // https://wiki.xn--rckteqa2e.com/wiki/%E3%83%80%E3%83%A1%E3%83%BC%E3%82%B8
 
+// ゴツメで倒されるとドラゴンテールのような追加効果が入らないようだ
+// https://www.youtube.com/watch?v=QL0jvVS4NiY
+
 const PLAYOUT_TURNS : usize = 3;
 
 fn main() {

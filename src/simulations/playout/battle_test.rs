@@ -7,7 +7,7 @@ use crate::{
     simulations::{calc_speed::calc_speed, calculate_damage::calculate_damage},
 };
 
-use super::playout_result::PlayoutResult;
+use super::{playout_eval::PlayoutEval, playout_result::PlayoutResult};
 
 pub fn battling(
     p1: &PokeParam,
@@ -56,19 +56,49 @@ fn p1_plays_first(
     if p2_speed < p1_speed {
         return true;
     }
+	//同速の場合乱数
     thread_rng().gen()
 }
 
 /// 基本的に、p1は自分、p2は相手、であるが、評価値を出すときにはこの「自分」がもともとP1だったかが問題になる。p1_is_p1で調べられるようにする
+fn run_move(
+	turn : u32,
+	p1_is_p1: bool,
+    p1: &mut PokeParam,
+    p1_c: &PokeConst,
+    m: &DamageMove,
+    p2: &mut PokeParam,
+    p2_c: &PokeConst,
+) -> Option<PlayoutEval>{
+	if p2.hp == 0 {
+        if p1.hp == 0 {
+            return Some(PlayoutEval::both_dead());
+        }
+        if p1_is_p1 {
+            return Some(PlayoutEval::p1_wins(turn, p1.hp));
+        } else {
+            return Some(PlayoutEval::p2_wins(turn, p1.hp));
+        }
+    }
+    if p1.hp == 0 {
+        if p1_is_p1 {
+            return Some(PlayoutEval::p2_wins(turn, p2.hp));
+        } else {
+            return Some(PlayoutEval::p1_wins(turn, p2.hp));
+        }
+    }
+	return None
+}
+
+
 fn do_damage(
-    turn: u32,
     p1_is_p1: bool,
     p1: &mut PokeParam,
     p1_c: &PokeConst,
     m: &DamageMove,
     p2: &mut PokeParam,
     p2_c: &PokeConst,
-) -> Option<PlayoutResult> {
+){
     let original_damage = calculate_damage(p1, p1_c, m, p2, p2_c);
     let damage = if p2.hp < original_damage.avg {
         p2.hp
@@ -88,22 +118,5 @@ fn do_damage(
     p1.apply_rank_delta(&m.rank_delta);
     p2.apply_rank_delta(&m.oppo_rank_delta);
 
-    if p2.hp == 0 {
-        if p1.hp == 0 {
-            return Some(PlayoutResult::both_dead());
-        }
-        if p1_is_p1 {
-            return Some(PlayoutResult::p1_wins(turn, p1.hp));
-        } else {
-            return Some(PlayoutResult::p2_wins(turn, p1.hp));
-        }
-    }
-    if p1.hp == 0 {
-        if p1_is_p1 {
-            return Some(PlayoutResult::p2_wins(turn, p2.hp));
-        } else {
-            return Some(PlayoutResult::p1_wins(turn, p2.hp));
-        }
-    }
-    return None;
+  
 }
