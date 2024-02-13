@@ -27,7 +27,6 @@ pub enum DamageType {
     Constant,
 }
 
-
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TestType {
     BattleTest,
@@ -45,7 +44,7 @@ pub struct DamageMove {
     /// そのうち使いたい
     //pub contact: bool,
     pub priority: i32,
-	pub hits : Hits,
+    pub hits: Hits,
     pub rank_delta: Ranks,
     pub oppo_rank_delta: Ranks,
     pub drain: Percent,
@@ -150,13 +149,14 @@ pub struct Options {
     pub oppo_speed: Option<i32>,
     // 引数を持たないパラメータはStringで作れる(引数を持ててしまうのは弱点ではあるが・・・)
     pub self_destruct: Option<String>,
-    pub hit: Option<u32>,
+	// 何回攻撃するか。Noneなら1。
+    pub hits: Option<u32>,
     pub hit_min: Option<u32>,
     pub hit_max: Option<u32>,
     // compoundが90なら、次回も殴れるかどうか毎回90%の確率で抽選が入る
     pub compound: Option<u32>,
     // トリプルキック トリプルアクセルは当たるたびに20,40,60のように2倍、3倍と威力が増えていく
-    pub power_inc: Option<String>,
+    pub inc_power: Option<String>,
 }
 
 impl Options {
