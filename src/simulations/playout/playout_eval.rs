@@ -1,6 +1,5 @@
 /// 大きいほどP1にとって良い結果であり、
 /// 小さいほどP2にとって良い結果である
-#[derive(PartialEq)]
 pub struct PlayoutEval {
     /// p1が勝つと i16::MAX - 決着までのターン数
     /// p2が勝つと i16::MIN + 決着までのターン数
@@ -20,9 +19,9 @@ union Union {
     hp_rate: f32,
 }
 
-impl PartialEq for Union {
+impl PartialEq for PlayoutEval {
     fn eq(&self, other: &Self) -> bool {
-        unsafe { self.rest_hp == other.rest_hp }
+        unsafe { compare(self, other).is_eq() }
     }
 }
 
@@ -30,22 +29,25 @@ impl Eq for PlayoutEval {}
 
 impl PartialOrd for PlayoutEval {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        match self.turns.partial_cmp(&other.turns) {
-            Some(core::cmp::Ordering::Equal) => {}
-            ord => return ord,
-        }
-        if self.turns == 0 {
-            unsafe { self.u.hp_rate.partial_cmp(&other.u.hp_rate) }
-        } else {
-            unsafe { self.u.rest_hp.partial_cmp(&other.u.rest_hp) }
-        }
+        Some(compare(self, other))
     }
 }
 
 impl Ord for PlayoutEval {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.partial_cmp(other).unwrap()
+        compare(self, other)
     }
+}
+
+fn compare(l : &PlayoutEval, r : &PlayoutEval) -> std::cmp::Ordering{
+	if l.turns != r.turns{
+		return l.turns.cmp(&r.turns);
+	}
+	if l.turns == 0 {
+		unsafe { l.u.hp_rate.partial_cmp(&r.u.hp_rate).unwrap() }
+	} else {
+		unsafe { l.u.rest_hp.cmp(&r.u.rest_hp) }
+	}
 }
 
 impl PlayoutEval {

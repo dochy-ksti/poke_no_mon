@@ -27,6 +27,7 @@ pub enum DamageType {
     Constant,
 }
 
+
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TestType {
     BattleTest,
@@ -44,19 +45,18 @@ pub struct DamageMove {
     /// そのうち使いたい
     //pub contact: bool,
     pub priority: i32,
+	pub hits : Hits,
     pub rank_delta: Ranks,
     pub oppo_rank_delta: Ranks,
     pub drain: Percent,
     pub recoil: Percent,
     /// 0~3
     pub critical: u32,
-	pub self_destruct : bool,
+    pub self_destruct: bool,
     pub test_type: TestType,
 }
 
 impl DamageMove {
-    
-
     /// 使うたびに弱くなっていくような技は、ダメージが高くてもmost_damaging_moveとはみなせず、
     /// Drainする技や、反動がある技、防御が下がる技など、相手と殴り合わないと結果が見えない技もある。
     fn test_type(
@@ -85,7 +85,8 @@ fn create_damage(
     u: String,
     o: Options,
 ) -> DamageMove {
-    let move_type = Types::from_str(&move_type).expect(&format!("{name}: there's no type '{move_type}'"));
+    let move_type =
+        Types::from_str(&move_type).expect(&format!("{name}: there's no type '{move_type}'"));
     let (damage_type, unique_move) = if u == "" {
         (DamageType::Normal, UniqueMove::NotUnique)
     } else if u == "U" {
@@ -100,14 +101,14 @@ fn create_damage(
     } else {
         panic!("{name}: the last arg '{u}' couldn't be recognized")
     };
-	let priority = o.priority.unwrap_or(0);
-	let rank_delta = o.rank();
-	let oppo_rank_delta = o.oppo_rank();
-	let drain = o.drain.map(|v| Percent::new(v)).unwrap_or(Percent::V0);
-	let recoil = o.recoil.map(|v| Percent::new(v)).unwrap_or(Percent::V0);
-	let critical = o.critical.unwrap_or(0);
-	let self_destruct = o.self_destruct.is_some();
-    DamageMove{
+    let priority = o.priority.unwrap_or(0);
+    let rank_delta = o.rank();
+    let oppo_rank_delta = o.oppo_rank();
+    let drain = o.drain.map(|v| Percent::new(v)).unwrap_or(Percent::V0);
+    let recoil = o.recoil.map(|v| Percent::new(v)).unwrap_or(Percent::V0);
+    let critical = o.critical.unwrap_or(0);
+    let self_destruct = o.self_destruct.is_some();
+    DamageMove {
         name,
         kind,
         damage_type,
@@ -118,11 +119,11 @@ fn create_damage(
         rank_delta,
         oppo_rank_delta,
         drain,
-        recoil, 
+        recoil,
         critical,
-		self_destruct,
-		test_type: DamageMove::test_type(rank_delta, oppo_rank_delta, drain, recoil)
-	}
+        self_destruct,
+        test_type: DamageMove::test_type(rank_delta, oppo_rank_delta, drain, recoil),
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -147,7 +148,15 @@ pub struct Options {
     pub oppo_satk: Option<i32>,
     pub oppo_sdef: Option<i32>,
     pub oppo_speed: Option<i32>,
-	pub self_destruct: Option<String>,
+    // 引数を持たないパラメータはStringで作れる(引数を持ててしまうのは弱点ではあるが・・・)
+    pub self_destruct: Option<String>,
+    pub hit: Option<u32>,
+    pub hit_min: Option<u32>,
+    pub hit_max: Option<u32>,
+    // compoundが90なら、次回も殴れるかどうか毎回90%の確率で抽選が入る
+    pub compound: Option<u32>,
+    // トリプルキック トリプルアクセルは当たるたびに20,40,60のように2倍、3倍と威力が増えていく
+    pub power_inc: Option<String>,
 }
 
 impl Options {
