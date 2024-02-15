@@ -149,13 +149,13 @@ pub struct Options {
     pub oppo_speed: Option<i32>,
     // 引数を持たないパラメータはStringで作れる(引数を持ててしまうのは弱点ではあるが・・・)
     pub self_destruct: Option<String>,
-	// 何回攻撃するか。Noneなら1。
+    /// 何回攻撃するか。Noneなら1。
     pub hits: Option<u32>,
-    pub hit_min: Option<u32>,
-    pub hit_max: Option<u32>,
-    // compoundが90なら、次回も殴れるかどうか毎回90%の確率で抽選が入る
+    pub hits_min: Option<u32>,
+    pub hits_max: Option<u32>,
+    /// compoundが90なら、次回も殴れるかどうか毎回90%の確率で抽選が入る
     pub compound: Option<u32>,
-    // トリプルキック トリプルアクセルは当たるたびに20,40,60のように2倍、3倍と威力が増えていく
+    /// トリプルキック トリプルアクセルは当たるたびに20,40,60のように2倍、3倍と威力が増えていく
     pub inc_power: Option<String>,
 }
 
